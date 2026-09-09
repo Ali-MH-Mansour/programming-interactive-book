@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programming — Year 1 (Программирование · C / C++)</title>
+<!-- ===== ownership watermark · Layer 2 (interactive-book-build-standard §7) — schema.org CreativeWork.
+     Scheme + detection method kept private in the BrainCore repo (260831-001-copyright-watermark-note). -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Programming — Year 1 (Программирование · C / C++)",
+  "inLanguage": "en",
+  "copyrightYear": 2026,
+  "copyrightHolder": { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "creator":         { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "author":          { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "contributor":     { "@type": "Person", "name": "Claude (Anthropic)" },
+  "publisher":       { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "copyrightNotice": "© 2026 Dr. Ali Mahmoud Mansour. All rights reserved.",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creditText": "Content and concept by Dr. Ali Mahmoud Mansour; co-created with Claude (Anthropic).",
+  "identifier": "OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026"
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
+    --line:#e7e0d6; --accent:#c8622a; --accent-soft:#f6e4d6;
+    --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
+    --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
+    --radius:16px; --serif:"Iowan Old Style",Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Fira Code",Menlo,Consolas,monospace;
+  }
+  /* §5 automatic dark mode */
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
+      --line:#2c333d; --accent:#e08a52; --accent-soft:#38271c;
+      --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;margin:0}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
+
+  /* ---- cover masthead + byline + optional photo (§6) ---- */
+  header.mast{
+    background:linear-gradient(135deg,var(--accent) 0%,#a84c1f 100%);
+    color:#fff;padding:60px 22px 52px;text-align:center;position:relative;overflow:hidden}
+  header.mast::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+  .mast h1{font-family:var(--serif);font-size:clamp(1.5rem,4.2vw,2.4rem);margin:.1em 0 .25em;font-weight:600;letter-spacing:-.01em}
+  .mast h1 .ru{display:block;font-size:.72em;opacity:.9;font-weight:500;margin-top:.15em}
+  .mast .sub{opacity:.92;font-size:1.05rem;max-width:680px;margin:.3em auto 0}
+  .mast .byline{margin-top:14px;font-size:.92rem;opacity:.95}
+  .mast .byline a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+  .mast .portrait{width:96px;height:96px;border-radius:50%;object-fit:cover;
+    border:3px solid rgba(255,255,255,.85);box-shadow:0 4px 14px rgba(0,0,0,.25);
+    margin:22px auto 0;display:block;background:rgba(255,255,255,.15)}
+
+  /* ---- about ---- */
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:28px clamp(20px,4vw,40px);margin-top:26px}
+  .intro h2{font-family:var(--serif);font-size:1.35rem;margin:.1em 0 .5em;font-weight:600}
+  .prose{font-family:var(--serif);font-size:1.05rem}
+  p{margin:.9em 0}
+  .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .facts .chip{font-family:var(--mono);font-size:.78rem;background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;padding:5px 12px;font-weight:700}
+
+  /* ---- lecture cards ---- */
+  .toc-title{font-family:var(--serif);font-size:1.4rem;margin:40px 0 4px;font-weight:600}
+  .toc-sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .lec{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 20px;display:flex;flex-direction:column;transition:transform .15s,border-color .15s;position:relative;overflow:hidden}
+  a.lec{color:inherit;text-decoration:none}
+  a.lec:hover{transform:translateY(-3px);border-color:var(--accent)}
+  .lec .num{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--accent);font-weight:700;text-transform:uppercase}
+  .lec h3{font-family:var(--serif);font-size:1.12rem;margin:.35em 0 .1em;font-weight:600;line-height:1.3}
+  .lec .foot{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:600}
+  .lec.live .foot{color:var(--accent)}
+  .lec.soon{opacity:.6;cursor:not-allowed}
+  .lec.soon .foot{color:var(--muted)}
+  .pill{margin-inline-start:auto;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;
+    padding:3px 9px;border-radius:999px;font-weight:700}
+  .pill.on{background:var(--accent-soft);color:var(--accent)}
+  .pill.off{background:#eef1f5;color:var(--muted);border:1px solid var(--line)}
+
+  .note{background:var(--blue-soft);border-inline-start:4px solid var(--blue);border-radius:10px;
+    padding:14px 18px;margin:26px 0 0;font-size:.94rem}
+  .note b{color:var(--blue)}
+
+  /* ---- bottom summary list ---- */
+  .summary{margin-top:46px}
+  .summary h2{font-family:var(--serif);font-size:1.4rem;margin:0 0 4px;font-weight:600}
+  .summary .sub{color:var(--muted);margin:0 0 18px;font-size:.95rem}
+  .summary ol{list-style:none;counter-reset:lec -1;margin:0;padding:0}
+  .summary li{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);padding:14px 18px 14px 58px;margin:0 0 12px;counter-increment:lec}
+  .summary li::before{content:counter(lec);position:absolute;left:16px;top:16px;
+    width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    font-family:var(--mono);font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+  .summary li b{font-family:var(--serif);font-size:1.02rem}
+  .summary li span{display:block;color:var(--muted);font-size:.92rem;margin-top:3px}
+
+  footer{max-width:900px;margin:34px auto 0;padding:0 22px;color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ===== cover ===== -->
+<header class="mast">
+  <h1>Programming — Year 1
+    <span class="ru">Программирование · C / C++</span>
+  </h1>
+  <div class="sub">A first-year C/C++ programming course as an interactive book — every idea that can be shown becomes an animation you can play, step through and replay, with a short note on what to watch for.</div>
+  <img class="portrait" src="images/instructor.png" alt="Dr. Ali Mahmoud Mansour" onerror="this.style.display='none'">
+  <div class="byline">Dr. Ali Mahmoud Mansour · PhD in AI and Machine Learning · <a href="https://sfedu.ru/s7/person/ru/mansur" target="_blank" rel="noopener">Personal page</a></div>
+</header>
+
+<div class="wrap">
+
+  <section class="intro">
+    <h2>About this course</h2>
+    <div class="prose">
+      <p>This is a first-year programming course taught in <b>C and C++</b>. It starts from the very beginning — how a program is written, turned into something the computer can actually run, and made to do useful work — and builds up over the semester to arrays and pointers, functions, files, memory you manage yourself, and a closing look at how the same language is used for artificial intelligence.</p>
+      <p>Each chapter is a single web page you can open on any device. Wherever an idea is easier to <i>see</i> than to read about — how a value is laid out in memory, how a loop steps through data, how a program is assembled from its parts — it becomes a small animation you can play and replay at your own pace. No installation and no internet connection are needed once a chapter has opened.</p>
+      <div class="facts">
+        <span class="chip">Language: C / C++</span>
+        <span class="chip">18 lectures</span>
+        <span class="chip">8 modules</span>
+        <span class="chip">Southern Federal University · 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="toc-title">Lectures</h2>
+  <p class="toc-sub">Lectures 0, 1 and 2 are available now. The remaining chapters will be unlocked as the course goes on.</p>
+
+  <div class="toc">
+
+    <a class="lec live" href="lecture-00.html">
+      <div class="num">Lecture 0</div>
+      <h3>Course Organization</h3>
+      <div class="foot">Read chapter →<span class="pill on">◆ available</span></div>
+    </a>
+
+    <a class="lec live" href="lecture-01.html">
+      <div class="num">Lecture 1</div>
+      <h3>Getting Started with C</h3>
+      <div class="foot">Read chapter →<span class="pill on">◆ available</span></div>
+    </a>
+
+    <a class="lec live" href="lecture-02.html">
+      <div class="num">Lecture 2</div>
+      <h3>Data Types &amp; Operators</h3>
+      <div class="foot">Read chapter →<span class="pill on">◆ available</span></div>
+    </a>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 3</div>
+      <h3>Arithmetic &amp; Computation</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 4</div>
+      <h3>Input &amp; Output</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 5</div>
+      <h3>Conditionals &amp; Loops</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 6</div>
+      <h3>Arrays &amp; Pointers</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 7</div>
+      <h3>Strings</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 8</div>
+      <h3>Functions &amp; Recursion</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 9</div>
+      <h3>File I/O</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 10</div>
+      <h3>Dynamic Memory</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 11</div>
+      <h3>Structs &amp; Unions</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 12</div>
+      <h3>Multithreading</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 13</div>
+      <h3>AI Algorithms in C++</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 14</div>
+      <h3>AI on Hardware</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 15</div>
+      <h3>Vibe Coding &amp; AI Assistance</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 16</div>
+      <h3>Preprocessor &amp; Build Systems</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 17</div>
+      <h3>Standard Libraries</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+    <div class="lec soon" aria-disabled="true">
+      <div class="num">Lecture 18</div>
+      <h3>Data Structures &amp; Complexity</h3>
+      <div class="foot">Coming soon<span class="pill off">locked</span></div>
+    </div>
+
+  </div>
+
+  <h2 class="toc-title">Reference</h2>
+  <p class="toc-sub">Study aids that span the whole course.</p>
+
+  <div class="toc">
+    <a class="lec live" href="glossary.html">
+      <div class="num">Glossary</div>
+      <h3>Course Terms Glossary</h3>
+      <div class="foot">Open glossary →<span class="pill on">◆ available</span></div>
+    </a>
+  </div>
+
+  <div class="note">
+    <b>ℹ︎ Note:</b> Only Lectures 0–2 are open at the moment. The other chapters are listed so you can see where the course is going; each one will become a clickable link when it is released. The <a href="glossary.html">multilingual terms glossary</a> covering all lectures is available now.
+  </div>
+
+  <!-- ===== bottom summary: one-line preview of every lecture ===== -->
+  <section class="summary">
+    <h2>What each lecture covers</h2>
+    <p class="sub">A one-line preview of all nineteen lectures (L0–L18).</p>
+    <ol>
+      <li><b>Course Organization</b><span>How the course runs — the schedule, the grading map, lab rules, the AI-use policy, and what you need to get started.</span></li>
+      <li><b>Getting Started with C</b><span>The C language and its tools — how you turn source code into a running program (edit → compile → link → run).</span></li>
+      <li><b>Data Types &amp; Operators</b><span>The kinds of values a C program stores — integers, real numbers and characters — how they are declared and combined.</span></li>
+      <li><b>Arithmetic &amp; Computation</b><span>Doing maths in C — operators and precedence, integer versus floating-point behaviour, and how numbers can overflow.</span></li>
+      <li><b>Input &amp; Output</b><span>Reading from the keyboard and printing to the screen with <code>printf</code>/<code>scanf</code> and format specifiers.</span></li>
+      <li><b>Conditionals &amp; Loops</b><span>Making decisions and repeating work — <code>if</code>, <code>switch</code>, <code>for</code>, <code>while</code> and <code>do-while</code>.</span></li>
+      <li><b>Arrays &amp; Pointers</b><span>Storing many values together, and pointers — the addresses that let C reach into memory directly.</span></li>
+      <li><b>Strings</b><span>Text in C — character arrays, the standard string functions, and the classic pitfalls to avoid.</span></li>
+      <li><b>Functions &amp; Recursion</b><span>Breaking a program into reusable functions — parameters, scope, the call stack, and recursion.</span></li>
+      <li><b>File I/O</b><span>Reading and writing files — opening and closing, text versus binary, and handling errors.</span></li>
+      <li><b>Dynamic Memory</b><span>Asking for memory while the program runs — <code>malloc</code>/<code>calloc</code>/<code>realloc</code>/<code>free</code> and avoiding leaks.</span></li>
+      <li><b>Structs &amp; Unions</b><span>Building your own data types — <code>struct</code>, <code>union</code>, <code>typedef</code>, and nesting them.</span></li>
+      <li><b>Multithreading</b><span>Doing several things at once — threads, synchronization, and the race conditions to watch for.</span></li>
+      <li><b>AI Algorithms in C++</b><span>Classic machine-learning methods coded from scratch — linear regression, Naïve Bayes and k-means.</span></li>
+      <li><b>AI on Hardware</b><span>Running AI fast — GPUs and CUDA, FPGAs, and shrinking models so they fit and run efficiently.</span></li>
+      <li><b>Vibe Coding &amp; AI Assistance</b><span>Using AI tools to help you write code — what they are good for, and doing it responsibly.</span></li>
+      <li><b>Preprocessor &amp; Build Systems</b><span>Splitting a program across files and building it — the preprocessor, Makefiles and CMake.</span></li>
+      <li><b>Standard Libraries</b><span>The ready-made toolbox — <code>stdlib</code>, <code>string.h</code>, <code>time.h</code>, <code>ctype.h</code>, and a first look at the C++ STL.</span></li>
+      <li><b>Data Structures &amp; Complexity</b><span>The capstone — lists, stacks, queues, sorting, hashing, and measuring an algorithm's cost with Big-O.</span></li>
+    </ol>
+  </section>
+
+</div>
+
+<!-- ===== footer + ownership watermark Layers 1 & 3 (interactive-book-build-standard §7) ===== -->
+<footer>
+  Programming — Year 1 · Interactive book<br>
+  <!-- Layer 1 · visible copyright notice -->
+  © 2026 Dr. Ali Mahmoud Mansour · All rights reserved. Content &amp; concept: Dr. Ali Mahmoud Mansour · Co-created with Claude (Anthropic).<!-- Layer 3 · invisible zero-width ownership signature (token OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026) --><span aria-hidden="true">⁠​‌​​‌‌‌‌​‌​‌​‌‌‌​‌​​‌‌‌​​‌​​​‌​‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​​‌​‌​​‌‌​​​‌​​‌​​‌​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌​​​​‌​​‌‌​‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​​​‌​​​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌‌‌​​‌​‌​​‌‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​‌​​‌​​​‌‌‌​‌‌​‌​​​​‌‌​‌​​‌‌‌‌​​‌​‌‌​‌​‌​​​​‌‌​‌​‌​​‌​​‌​​​‌​‌​‌​​​​​‌​‌​‌​‌​​​‌​​‌‌‌‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​‌‌​‌​​‌‌​​​‌​​​​​‌​‌​‌​‌​‌​‌​​​‌​​​‌​​​‌​‌​​‌‌‌​‌‌​‌​‌‌​​‌​‌​​​‌​‌​‌​​​​​‌​‌​‌​​‌​​​‌‌‌‌​‌​​‌‌​​‌​​​‌‌​​​​​​‌‌​​‌​​​‌‌​‌‌​⁠</span>
+</footer>
+
+</body>
+</html>
