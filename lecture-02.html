@@ -28,7 +28,7 @@
   /* ---- design tokens (shared with the book) ---- */
   :root{
     --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
-    --line:#e7e0d6; --accent:#c8622a; --accent-soft:#f6e4d6;
+    --line:#e7e0d6; --accent:#3f4c8a; --accent-soft:#e2e5f4;
     --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
     --amber:#b8890f; --amber-soft:#f7edcf; --red:#c0392b; --red-soft:#f7e0dc;
     --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
@@ -40,7 +40,7 @@
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
       --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
-      --line:#2c333d; --accent:#e08a52; --accent-soft:#38271c;
+      --line:#2c333d; --accent:#8e9bdb; --accent-soft:#1c2140;
       --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
       --amber:#d8ab3a; --amber-soft:#2c2411; --red:#e07a6c; --red-soft:#331b18;
       --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
@@ -53,7 +53,7 @@
 
   /* ---- masthead + instructor block (§6) ---- */
   header.mast{
-    background:linear-gradient(135deg,var(--accent) 0%,#a84c1f 100%);
+    background:linear-gradient(135deg,var(--accent) 0%,#2b3566 100%);
     color:#fff;padding:46px 22px 40px;text-align:center;position:relative;overflow:hidden}
   header.mast::after{content:"";position:absolute;inset:0;
     background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
