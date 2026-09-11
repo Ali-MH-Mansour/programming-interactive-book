@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arithmetic and Computational Operations — Interactive Book</title>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Arithmetic and Computational Operations",
+  "inLanguage": "en",
+  "copyrightYear": 2026,
+  "copyrightHolder": { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "creator":         { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "author":          { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "contributor":     { "@type": "Person", "name": "Claude (Anthropic)" },
+  "publisher":       { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "copyrightNotice": "© 2026 Dr. Ali Mahmoud Mansour. All rights reserved.",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creditText": "Content and concept by Dr. Ali Mahmoud Mansour; co-created with Claude (Anthropic).",
+  "identifier": "OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026"
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
+    --line:#e7e0d6; --accent:#c8622a; --accent-soft:#f6e4d6;
+    --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
+    --amber:#b8890f; --amber-soft:#f7edcf;
+    --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
+    --radius:16px;
+    --serif:"Iowan Old Style",Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Fira Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
+      --line:#2c333d; --accent:#e08a52; --accent-soft:#38271c;
+      --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
+      --amber:#d8ab3a; --amber-soft:#2c2411;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;margin:0}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 90px}
+  header.mast{
+    background:linear-gradient(135deg,var(--accent) 0%,#a84c1f 100%);
+    color:#fff;padding:46px 22px 40px;text-align:center;position:relative;overflow:hidden}
+  header.mast::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+  .mast .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:.68rem;opacity:.8;font-weight:600}
+  .mast h1{font-family:var(--serif);font-size:clamp(1.5rem,4.5vw,2.4rem);margin:.1em 0 .15em;font-weight:600;letter-spacing:-.01em}
+  .mast .sub{opacity:.92;font-size:1rem;max-width:640px;margin:.2em auto 0}
+  .instructor{position:relative;z-index:1;max-width:560px;margin:20px auto 0;padding:13px 18px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:12px;
+    backdrop-filter:blur(3px);display:flex;flex-direction:column;gap:3px;align-items:center}
+  .instructor .iname{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:#fff}
+  .instructor .ispec{font-size:.85rem;opacity:.92}
+  .instructor .ipage{font-size:.85rem;color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .instructor .ipage:hover{opacity:.85}
+  .langbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 0}
+  .langbar .inner{max-width:820px;margin:0 auto;padding:0 22px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .langbar .home{font-size:.82rem;color:var(--muted);font-weight:600;text-decoration:none}
+  .langbar .home:hover{color:var(--accent)}
+  section.chapter{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:34px clamp(20px,4vw,44px);margin-top:26px}
+  .chapter > h2{font-family:var(--serif);font-size:1.5rem;margin:.1em 0 .1em;font-weight:600}
+  .chapter > .lead{color:var(--muted);margin:.2em 0 1.4em;font-size:1.02rem}
+  p{margin:.9em 0}
+  .prose{font-family:var(--serif);font-size:1.08rem}
+  .mono{font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);border-radius:4px;padding:1px 5px}
+  .demo{border:1px solid var(--line);border-radius:14px;margin:22px 0;overflow:hidden;background:var(--bg)}
+  .demo .dhead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .demo .dhead .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+  .demo .dhead h4{margin:0;font-size:.92rem;font-weight:700;letter-spacing:.01em}
+  .demo .dhead .tag{margin-inline-start:auto;font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .demo .stage{padding:22px 16px;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .demo .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 16px 16px}
+  button.ctrl{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:600;
+    font-size:.84rem;padding:7px 14px;border-radius:10px;cursor:pointer;transition:.15s;display:inline-flex;gap:6px;align-items:center}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+  button.ctrl.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.ctrl.primary:hover{filter:brightness(1.05);color:#fff}
+  button.ctrl:disabled{opacity:.4;cursor:default;border-color:var(--line);color:var(--muted)}
+  .caption{font-size:.9rem;color:var(--muted);min-height:1.4em;text-align:center;transition:.2s;padding:0 16px 8px}
+  .note{background:var(--blue-soft);border-inline-start:4px solid var(--blue);border-radius:10px;
+    padding:12px 16px;margin:20px 0;font-size:.94rem}
+  .note b{color:var(--blue)}
+  .note.green{background:var(--green-soft);border-color:var(--green)}
+  .note.green b{color:var(--green)}
+  .note.amber{background:var(--amber-soft);border-color:var(--amber)}
+  .note.amber b{color:var(--amber)}
+  .watch{background:var(--amber-soft);border-inline-start:4px solid var(--amber);border-radius:10px;
+    padding:13px 17px;margin:6px 0 2px;font-size:.95rem}
+  .watch .wh{font-weight:700;color:var(--amber);display:block;margin-bottom:3px}
+  pre.calc{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow-x:auto;font-size:.9rem;line-height:1.75;margin:16px 0;white-space:pre}
+  pre.calc b{color:var(--accent)}
+  pre.calc .g{color:var(--muted)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.twocol{grid-template-columns:1fr}}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h5{margin:.1em 0 .5em;font-size:.98rem}
+  .card p{margin:.3em 0;font-size:.9rem;color:var(--muted)}
+  .chapnav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .chapnav a{flex:1;min-width:180px;text-decoration:none;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;color:inherit;transition:.15s}
+  .chapnav a:hover{border-color:var(--accent)}
+  .chapnav .dir{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .chapnav .lb{font-weight:600;color:var(--accent);margin-top:2px}
+  .chapnav a.disabled{opacity:.5;pointer-events:none}
+  footer{max-width:820px;margin:34px auto 0;padding:0 22px;color:var(--muted);font-size:.85rem;text-align:center}
+  /* demo-specific styles */
+  .divbox{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px}
+  .divrow{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:1rem}
+  .divrow .label{width:120px;text-align:right;color:var(--muted);font-size:.85rem}
+  .divrow .val{flex:1;background:var(--panel);border:2px solid var(--line);border-radius:8px;padding:7px 12px;transition:border-color .25s,background .25s}
+  .divrow .val.hi{border-color:var(--accent);background:var(--accent-soft)}
+  .divrow .eq{color:var(--muted);font-weight:700;font-size:1.1rem}
+  .ieee-grid{display:grid;gap:6px;width:100%;max-width:520px}
+  .ieee-bits{display:flex;gap:2px;flex-wrap:nowrap;justify-content:center}
+  .bit{width:18px;height:28px;border:1.5px solid var(--line);border-radius:4px;display:flex;align-items:center;
+    justify-content:center;font-family:var(--mono);font-size:.72rem;font-weight:700;transition:.3s;flex-shrink:0}
+  .bit.s{background:#f0e0d0;border-color:#c8622a;color:#a84c1f}
+  .bit.e{background:#d0e4f0;border-color:#2f6db3;color:#1a4d8f}
+  .bit.m{background:#d0f0dc;border-color:#2f8f5b;color:#1a6040}
+  .bit.s.on{background:var(--accent);color:#fff}
+  .bit.e.on{background:var(--blue);color:#fff}
+  .bit.m.on{background:var(--green);color:#fff}
+  .ieee-legend{display:flex;gap:14px;justify-content:center;font-size:.8rem;margin-top:4px}
+  .ieee-legend span{display:flex;align-items:center;gap:5px}
+  .ieee-legend .sq{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+  .ieee-label{font-family:var(--mono);font-size:.82rem;text-align:center;color:var(--muted);margin:4px 0}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="kicker">First-Year Programming · Lecture 3</div>
+  <h1>Arithmetic and Computational Operations</h1>
+  <div class="sub">Integer division, floating-point encoding, type promotion, and the standard math library</div>
+  <div class="instructor">
+    <span class="iname">Dr. Ali Mahmoud Mansour</span>
+    <span class="ispec">PhD in Artificial Intelligence and Machine Learning</span>
+    <a class="ipage" href="https://sfedu.ru/s7/person/ru/mansur" target="_blank" rel="noopener">Personal page</a>
+  </div>
+</header>
+
+<div class="langbar">
+  <div class="inner">
+    <a class="home" href="index.html">← Contents</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="chapter">
+    <h2>§1 · Integer Arithmetic: Division, Remainder, and Overflow</h2>
+    <p class="lead">In C/C++, integer arithmetic is exact — but it truncates rather than rounds, and it wraps silently when a result exceeds the type’s range.</p>
+    <div class="prose">
+      <p>When both operands of <code>/</code> are integers, the result is an integer — the fractional part is discarded (truncated toward zero). So <code>17 / 5</code> is <code>3</code>, not <code>3.4</code>. The companion operator <code>%</code> gives the <em>remainder</em> after that truncated division: <code>17 % 5</code> is <code>2</code> because 17 = 3&nbsp;×&nbsp;5 + 2.</p>
+      <p>The sign rule for <code>%</code> (C99/C++11): the result has the same sign as the <em>dividend</em> (the left operand). So <code>-17 % 5</code> is <code>-2</code>, and <code>17 % -5</code> is <code>2</code>. Remember this whenever you use <code>%</code> with negative values — it is <em>not</em> the mathematical modulo.</p>
+      <p><strong>Overflow.</strong> An <code>int</code> on most modern platforms is 32 bits and holds values in [&minus;2&thinsp;147&thinsp;483&thinsp;648,&nbsp;+2&thinsp;147&thinsp;483&thinsp;647]. Adding 1 to <code>INT_MAX</code> does <em>not</em> produce an error — it wraps silently to <code>INT_MIN</code> (undefined behaviour in C; two’s-complement wrapping in C++20). The cure is to check before you compute, or to use a wider type (<code>long long</code>) or <code>&lt;stdint.h&gt;</code> fixed-width types.</p>
+    </div>
+<pre class="calc">
+<span class="g">// Integer division and remainder</span>
+int a = 17, b = 5;
+<b>int q = a / b;</b>   <span class="g">// → 3    (truncated quotient)</span>
+<b>int r = a % b;</b>   <span class="g">// → 2    (remainder: 17 = 3×5 + 2)</span>
+
+<span class="g">// Overflow example — wraps to INT_MIN</span>
+int x = 2147483647;   <span class="g">// INT_MAX</span>
+<b>x = x + 1;</b>           <span class="g">// undefined behaviour (C) / wraps (C++20)</span>
+</pre>
+
+    <div class="demo" id="d-div">
+      <div class="dhead"><span class="dot"></span><h4>Integer Division &amp; Remainder Trace — 17 ÷ 5</h4><span class="tag">animated</span></div>
+      <div class="stage" id="div-stage"></div>
+      <div class="caption" id="div-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="div-play" onclick="DIV.play()">▶ Play</button>
+        <button class="ctrl" id="div-step" onclick="DIV.step()">⏭ Step</button>
+        <button class="ctrl" onclick="DIV.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      The quotient is the number of <em>full</em> copies of the divisor that fit into the dividend — any leftover becomes the remainder. The identity quotient × divisor + remainder = dividend always holds (3 × 5 + 2 = 17 ✓). That is how the CPU computes <code>%</code>: it performs the division, multiplies back, and subtracts.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§2 · Floating-Point Numbers: The IEEE-754 Model</h2>
+    <p class="lead">Real numbers in a computer are approximations. Every <code>float</code> or <code>double</code> is a finite binary fraction stored in a fixed-width register following the IEEE-754 standard.</p>
+    <div class="prose">
+      <p>A 32-bit <code>float</code> packs three fields into 32 bits:</p>
+      <p>• <strong>Sign</strong> (1 bit) — <code>0</code>&nbsp;=&nbsp;positive, <code>1</code>&nbsp;=&nbsp;negative.<br>
+         • <strong>Exponent</strong> (8 bits) — stored with a <em>bias</em> of 127. The actual power-of-two exponent is the stored byte minus 127.<br>
+         • <strong>Mantissa / significand</strong> (23 bits) — the fractional binary digits after the implicit leading <code>1.</code>.</p>
+      <p>Because most decimal fractions cannot be represented exactly in binary (e.g. <code>0.1</code>), comparing floats with <code>==</code> is dangerous. The safe idiom is <code>fabs(a&nbsp;-&nbsp;b)&nbsp;&lt;&nbsp;epsilon</code> with a suitably small <code>epsilon</code> (commonly <code>1e-6f</code> for <code>float</code> or <code>1e-9</code> for <code>double</code>).</p>
+    </div>
+<pre class="calc">
+<span class="g">// Never compare floats with ==</span>
+float a = 0.1f + 0.2f;
+float b = 0.3f;
+<b>if (a == b)</b> puts("equal");          <span class="g">// ← WRONG: may not print</span>
+
+<span class="g">// Correct: epsilon comparison</span>
+<b>if (fabsf(a - b) &lt; 1e-6f)</b> puts("equal");  <span class="g">// ← correct</span>
+</pre>
+
+    <div class="demo" id="d-ieee">
+      <div class="dhead"><span class="dot"></span><h4>IEEE-754 32-bit Float Encoding — 5.75 step by step</h4><span class="tag">animated</span></div>
+      <div class="stage" id="ieee-stage"></div>
+      <div class="caption" id="ieee-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="ieee-play" onclick="IEEE.play()">▶ Play</button>
+        <button class="ctrl" id="ieee-step" onclick="IEEE.step()">⏭ Step</button>
+        <button class="ctrl" onclick="IEEE.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      The mantissa stores only the digits <em>after</em> the leading <code>1.</code> — that leading bit is always 1 for a normalised number, so it is implied and not stored, giving an extra free bit of precision. The exponent field holds 129 (= 2 + 127&nbsp;bias), not 2. Decoding: value&nbsp;=&nbsp;(&minus;1)⁰ × 2^(129&minus;127) × 1.0111₂&nbsp;=&nbsp;1 × 4 × 1.4375&nbsp;=&nbsp;5.75 ✓
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§3 · Mixed-Type Arithmetic and Explicit Casts</h2>
+    <p class="lead">When operands of different types meet in an expression, C/C++ silently promotes the narrower type before computing. Knowing the promotion rules prevents surprising truncation bugs.</p>
+    <div class="prose">
+      <p><strong>Implicit promotion hierarchy (simplified):</strong> <code>int</code> → <code>long</code> → <code>long long</code> → <code>float</code> → <code>double</code>. If one operand is <code>double</code>, the other is converted to <code>double</code> before the operation; the result is <code>double</code>.</p>
+      <p>The classic trap: <code>1 / 3</code> is <code>0</code> (both operands are <code>int</code>). To get <code>0.333…</code>, write <code>1.0 / 3</code> or <code>(double)1 / 3</code>.</p>
+      <p><strong>Explicit cast syntax:</strong> <code>(target_type) expression</code>. Casts truncate floating-point to integer (toward zero), narrow integers (keeping only the low-order bits), or widen types. Always cast <em>before</em> the operation that needs the wider type, not after.</p>
+    </div>
+<pre class="calc">
+int   a = 7, b = 2;
+<b>double r1 = a / b;</b>           <span class="g">// → 3.0  (int division first, then widens)</span>
+<b>double r2 = (double)a / b;</b>   <span class="g">// → 3.5  (a promoted before dividing)</span>
+<b>int    n  = (int)3.99;</b>       <span class="g">// → 3    (truncates, not rounds)</span>
+</pre>
+    <div class="note">
+      <b>Rule of thumb:</b> cast the <em>first</em> operand to the wider type, not the whole result. <code>(double)(a / b)</code> still performs integer division first and yields <code>3.0</code>, not <code>3.5</code>.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§4 · Increment and Decrement Operators</h2>
+    <p class="lead">The <code>++</code> and <code>--</code> operators are the C family’s shorthand for adding or subtracting 1 — and their prefix vs postfix placement controls <em>when</em> the update happens relative to the surrounding expression.</p>
+    <div class="prose">
+      <p><strong>Prefix</strong> (<code>++x</code>): increment first, then use the new value. <strong>Postfix</strong> (<code>x++</code>): use the current value, then increment. When the operator stands alone on its own statement (e.g. <code>i++;</code>), the choice makes no observable difference — prefer prefix in C++ to avoid a needless copy of user-defined types.</p>
+    </div>
+<pre class="calc">
+int i = 5;
+int a = ++i;   <span class="g">// i becomes 6 first → a = 6, i = 6</span>
+
+int j = 5;
+int b = j++;   <span class="g">// b = 5 (old value), then j = 6</span>
+
+<span class="g">// In a for loop — identical effect when the operator is alone:</span>
+for (int k = 0; k &lt; 10; <b>k++</b>) { /* ... */ }
+for (int k = 0; k &lt; 10; <b>++k</b>) { /* ... */ }  <span class="g">// ← prefer in C++</span>
+</pre>
+    <div class="note amber">
+      <b>Undefined behaviour:</b> modifying a variable more than once without a sequence point — e.g. <code>i = i++ + ++i</code> — is undefined in C and C++. Never do it. Keep each <code>++</code>/<code>--</code> on its own statement or in a clearly separated context.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§5 · Mathematical Functions: <code>&lt;math.h&gt;</code> / <code>&lt;cmath&gt;</code></h2>
+    <p class="lead">The standard C math library provides transcendental functions, rounding, and utilities — all operating on <code>double</code> by default, with <code>f</code>-suffix variants for <code>float</code>.</p>
+    <div class="prose">
+      <p>Include <code>&lt;math.h&gt;</code> (C) or <code>&lt;cmath&gt;</code> (C++) and link with <code>-lm</code> on Linux/macOS.</p>
+    </div>
+<pre class="calc">
+#include &lt;math.h&gt;
+
+<b>sqrt(x)</b>     <span class="g">// √x — always double (sqrtf for float)</span>
+<b>pow(x, y)</b>  <span class="g">// xʸ — never use for squaring; write x*x instead</span>
+<b>fabs(x)</b>    <span class="g">// |x| for doubles (fabsf for float)</span>
+<b>floor(x)</b>   <span class="g">// rounds toward &minus;∞  (3.9→3, &minus;3.1→&minus;4)</span>
+<b>ceil(x)</b>    <span class="g">// rounds toward +∞  (3.1→4, &minus;3.9→&minus;3)</span>
+<b>round(x)</b>   <span class="g">// rounds to nearest, half away from zero</span>
+<b>fmod(x,y)</b>  <span class="g">// floating-point remainder (use instead of % for floats)</span>
+</pre>
+    <div class="note green">
+      <b>Tip:</b> <code>pow(x,&nbsp;2)</code> is typically computed as <code>exp(2&nbsp;*&nbsp;log(x))</code> internally — slower and less accurate than <code>x&nbsp;*&nbsp;x</code>. Always write <code>x&nbsp;*&nbsp;x</code> for squaring.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>Chapter summary</h2>
+    <div class="twocol">
+      <div class="card">
+        <h5>🎦 You just covered</h5>
+        <p>Integer division truncates (quotient × divisor + remainder = dividend) · IEEE-754 float encoding (sign + biased exponent + implicit-1 mantissa) · mixed-type promotion and the cast-before-operate rule · prefix vs postfix <code>++</code>/<code>--</code> · key <code>&lt;math.h&gt;</code> functions and why <code>x*x</code> beats <code>pow(x,2)</code>.</p>
+      </div>
+      <div class="card">
+        <h5>📄 Text reference</h5>
+        <p>The full written handout (same content, no animation) is the printable study copy: <span class="mono">L03-student-handout.md</span>, also as PDF.</p>
+      </div>
+    </div>
+
+    <div class="chapnav">
+      <a href="index.html"><span class="dir">Previous</span><div class="lb">← Contents</div></a>
+      <a href="index.html"><span class="dir">Contents</span><div class="lb">All lectures</div></a>
+      <a href="#" class="disabled"><span class="dir">Next</span><div class="lb">Coming soon</div></a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  First-Year Programming · Lecture 3 — Arithmetic and Computational Operations<br>
+  © 2026 Dr. Ali Mahmoud Mansour · All rights reserved. Content &amp; concept: Dr. Ali Mahmoud Mansour · Co-created with Claude (Anthropic).
+  <span aria-hidden="true">⁠​‌​​‌‌‌‌​‌​‌​‌‌‌​‌​​‌‌‌​​‌​​​‌​‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​​‌​‌​​‌‌​​​‌​​‌​​‌​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌​​​​‌​​‌‌​‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​​​‌​​​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌‌‌​​‌​‌​​‌‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​‌​​‌​​​‌‌‌​‌‌​‌​​​​‌‌​‌​​‌‌‌‌​​‌​‌‌​‌​‌​​​​‌‌​‌​‌​​‌​​‌​​​‌​‌​‌​​​​​‌​‌​‌​‌​​​‌​​‌‌‌‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​‌‌​‌​​‌‌​​​‌​​​​​‌​‌​‌​‌​‌​‌​​​‌​​​‌​​​‌​‌​​‌‌‌​‌‌​‌​‌‌​​‌​‌​​​‌​‌​‌​​​​​‌​‌​‌​​‌​​​‌‌‌‌​‌​​‌‌​​‌​​​‌‌​​​​​​‌‌​​‌​​​‌‌​‌‌​⁠</span>
+</footer>
+
+<script>
+/* ============================================================
+   DEMO 1 — Integer Division & Remainder Trace  (DIV)
+   Shows how 17 / 5 = 3 and 17 % 5 = 2 are derived.
+   ============================================================ */
+const DIV = (function() {
+  var stage = document.getElementById('div-stage');
+  var cap   = document.getElementById('div-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var STEPS = [
+    {q: null, r: null, trial: null, msg: 'Goal: compute 17 / 5 (quotient) and 17 % 5 (remainder).'},
+    {q: null, r: null, trial: 1,    msg: 'Trial: 5 × 1 = 5 ≤ 17 ✓ — 1 full copy fits.'},
+    {q: null, r: null, trial: 2,    msg: 'Trial: 5 × 2 = 10 ≤ 17 ✓ — 2 full copies fit.'},
+    {q: null, r: null, trial: 3,    msg: 'Trial: 5 × 3 = 15 ≤ 17 ✓ — 3 full copies fit.'},
+    {q: null, r: null, trial: 4,    msg: 'Trial: 5 × 4 = 20 > 17 ✗ — stop at 3.'},
+    {q: 3,    r: null, trial: null, msg: 'Quotient: 17 / 5 = 3 (integer division, truncated toward zero).'},
+    {q: 3,    r: 2,    trial: null, msg: 'Remainder: 17 − (3 × 5) = 17 − 15 = 2. So 17 % 5 = 2. Check: 3×5 + 2 = 17 ✓'}
+  ];
+
+  function build() {
+    stage.innerHTML =
+      '<div class="divbox">' +
+        '<div class="divrow"><span class="label">dividend</span><span class="val" id="dv-dvd">17</span></div>' +
+        '<div class="divrow"><span class="label">divisor</span><span class="val" id="dv-dvs">5</span></div>' +
+        '<div class="divrow"><span class="label">trial</span><span class="val" id="dv-tri">—</span></div>' +
+        '<div class="divrow"><span class="label">quotient (q)</span><span class="val" id="dv-q">?</span></div>' +
+        '<div class="divrow"><span class="label">remainder (r)</span><span class="val" id="dv-r">?</span></div>' +
+      '</div>';
+  }
+
+  function applyStep(s) {
+    var tri = document.getElementById('dv-tri');
+    var qEl = document.getElementById('dv-q');
+    var rEl = document.getElementById('dv-r');
+    if (!tri || !qEl || !rEl) { return; }
+    tri.classList.remove('hi');
+    qEl.classList.remove('hi');
+    rEl.classList.remove('hi');
+    if (s.trial !== null) {
+      var product = 5 * s.trial;
+      var ok = product <= 17;
+      tri.textContent = s.trial + ' (5×' + s.trial + '=' + product + (ok ? ' ≤ 17 ✓)' : ' > 17 ✗)');
+      tri.classList.add('hi');
+    } else {
+      tri.textContent = '—';
+    }
+    if (s.q !== null) { qEl.textContent = s.q; qEl.classList.add('hi'); } else { qEl.textContent = '?'; }
+    if (s.r !== null) { rEl.textContent = s.r; rEl.classList.add('hi'); } else { rEl.textContent = '?'; }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('div-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('div-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 800);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to trace 17 ÷ 5.';
+    var btn = document.getElementById('div-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+
+/* ============================================================
+   DEMO 2 — IEEE-754 32-bit Float Encoding  (IEEE)
+   Traces how 5.75 is packed into a 32-bit single-precision float.
+   5.75 = 0 10000001 01110000000000000000000
+   ============================================================ */
+const IEEE = (function() {
+  var stage = document.getElementById('ieee-stage');
+  var cap   = document.getElementById('ieee-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var ALL_BITS = [
+    0,
+    1,0,0,0,0,0,0,1,
+    0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  ];
+
+  var STEPS2 = [
+    {reveal: 'none', msg: 'Goal: encode 5.75 as a 32-bit IEEE-754 single-precision float.'},
+    {reveal: 'none', msg: 'Step 1 — Integer part: 5 = 101₂ (5 = 4 + 1 = 2² + 2⁰).'},
+    {reveal: 'none', msg: 'Step 2 — Fractional part: 0.75 = 0.11₂  (0.75×2=1.5 → bit=1 rem 0.5; 0.5×2=1.0 → bit=1 rem 0).'},
+    {reveal: 'none', msg: 'Step 3 — Combined: 5.75 = 101.11₂.'},
+    {reveal: 'none', msg: 'Step 4 — Normalise: shift point left 2 → 1.0111 × 2². Stored exponent = 2 + 127 bias = 129.'},
+    {reveal: 'sign', msg: 'Step 5 — Sign bit: positive → 0. Field: bit 31.'},
+    {reveal: 'exp',  msg: 'Step 6 — Exponent: 129 = 10000001₂. Stored in bits 30–23.'},
+    {reveal: 'mant', msg: 'Step 7 — Mantissa: drop the leading 1 from 1.0111 → store 01110…000 in bits 22–0.'},
+    {reveal: 'all',  msg: 'Complete: 0 | 10000001 | 01110000000000000000000 = 0x40B80000. That is 5.75f! ✓'}
+  ];
+
+  function buildGrid() {
+    var bits = '';
+    for (var i = 0; i < 32; i++) {
+      var cls = i === 0 ? 's' : (i < 9 ? 'e' : 'm');
+      bits += '<div class="bit ' + cls + '" id="ib' + i + '">·</div>';
+    }
+    stage.innerHTML =
+      '<div class="ieee-grid">' +
+        '<div class="ieee-label">32-bit float layout</div>' +
+        '<div class="ieee-bits">' + bits + '</div>' +
+        '<div class="ieee-legend">' +
+          '<span><div class="sq" style="background:#c8622a"></div>Sign (1)</span>' +
+          '<span><div class="sq" style="background:#2f6db3"></div>Exponent (8)</span>' +
+          '<span><div class="sq" style="background:#2f8f5b"></div>Mantissa (23)</span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function revealGroup(group) {
+    var i;
+    if (group === 'sign') {
+      var el = document.getElementById('ib0');
+      if (el) { el.textContent = '0'; el.classList.add('on'); }
+    } else if (group === 'exp') {
+      for (i = 1; i < 9; i++) {
+        var el2 = document.getElementById('ib' + i);
+        if (el2) { el2.textContent = ALL_BITS[i]; el2.classList.add('on'); }
+      }
+    } else if (group === 'mant') {
+      for (i = 9; i < 32; i++) {
+        var el3 = document.getElementById('ib' + i);
+        if (el3) { el3.textContent = ALL_BITS[i]; el3.classList.add('on'); }
+      }
+    } else if (group === 'all') {
+      for (i = 0; i < 32; i++) {
+        var el4 = document.getElementById('ib' + i);
+        if (el4) { el4.textContent = ALL_BITS[i]; el4.classList.add('on'); }
+      }
+    }
+  }
+
+  function step() {
+    if (stepIdx >= STEPS2.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('ieee-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    var s = STEPS2[stepIdx];
+    revealGroup(s.reveal);
+    cap.textContent = s.msg;
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('ieee-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 900);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; buildGrid();
+    cap.textContent = 'Press Play or Step to trace 5.75 into IEEE-754.';
+    var btn = document.getElementById('ieee-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+</script>
+</body>
+</html>
