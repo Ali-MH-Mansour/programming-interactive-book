@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Input and Output — Interactive Book</title>
+<!-- ===== ownership watermark · Layer 2 (build standard §7) — schema.org CreativeWork.
+     Scheme + detection method: [[260831-001-copyright-watermark-note]]. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Input and Output",
+  "inLanguage": "en",
+  "copyrightYear": 2026,
+  "copyrightHolder": { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "creator":         { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "author":          { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "contributor":     { "@type": "Person", "name": "Claude (Anthropic)" },
+  "publisher":       { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "copyrightNotice": "© 2026 Dr. Ali Mahmoud Mansour. All rights reserved.",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creditText": "Content and concept by Dr. Ali Mahmoud Mansour; co-created with Claude (Anthropic).",
+  "identifier": "OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026"
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
+    --line:#e7e0d6; --accent:#1f6f6b; --accent-soft:#dcefec;
+    --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
+    --amber:#b8890f; --amber-soft:#f7edcf;
+    --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
+    --radius:16px;
+    --serif:"Iowan Old Style",Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Fira Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
+      --line:#2c333d; --accent:#4fb3ab; --accent-soft:#16302e;
+      --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
+      --amber:#d8ab3a; --amber-soft:#2c2411;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;margin:0}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 90px}
+  header.mast{
+    background:linear-gradient(135deg,var(--accent) 0%,#145048 100%);
+    color:#fff;padding:46px 22px 40px;text-align:center;position:relative;overflow:hidden}
+  header.mast::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+  .mast .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:.68rem;opacity:.8;font-weight:600}
+  .mast h1{font-family:var(--serif);font-size:clamp(1.5rem,4.5vw,2.4rem);margin:.1em 0 .15em;font-weight:600;letter-spacing:-.01em}
+  .mast .sub{opacity:.92;font-size:1rem;max-width:640px;margin:.2em auto 0}
+  .instructor{position:relative;z-index:1;max-width:560px;margin:20px auto 0;padding:13px 18px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:12px;
+    backdrop-filter:blur(3px);display:flex;flex-direction:column;gap:3px;align-items:center}
+  .instructor .iname{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:#fff}
+  .instructor .ispec{font-size:.85rem;opacity:.92}
+  .instructor .ipage{font-size:.85rem;color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .instructor .ipage:hover{opacity:.85}
+  .langbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 0}
+  .langbar .inner{max-width:820px;margin:0 auto;padding:0 22px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .langbar .home{font-size:.82rem;color:var(--muted);font-weight:600;text-decoration:none}
+  .langbar .home:hover{color:var(--accent)}
+  section.chapter{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:34px clamp(20px,4vw,44px);margin-top:26px}
+  .chapter > h2{font-family:var(--serif);font-size:1.5rem;margin:.1em 0 .1em;font-weight:600}
+  .chapter > .lead{color:var(--muted);margin:.2em 0 1.4em;font-size:1.02rem}
+  p{margin:.9em 0}
+  .prose{font-family:var(--serif);font-size:1.08rem}
+  .mono{font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);border-radius:4px;padding:1px 5px}
+  .demo{border:1px solid var(--line);border-radius:14px;margin:22px 0;overflow:hidden;background:var(--bg)}
+  .demo .dhead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .demo .dhead .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+  .demo .dhead h4{margin:0;font-size:.92rem;font-weight:700;letter-spacing:.01em}
+  .demo .dhead .tag{margin-inline-start:auto;font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .demo .stage{padding:22px 16px;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .demo .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 16px 16px}
+  button.ctrl{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:600;
+    font-size:.84rem;padding:7px 14px;border-radius:10px;cursor:pointer;transition:.15s;display:inline-flex;gap:6px;align-items:center}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+  button.ctrl.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.ctrl.primary:hover{filter:brightness(1.05);color:#fff}
+  button.ctrl:disabled{opacity:.4;cursor:default;border-color:var(--line);color:var(--muted)}
+  .caption{font-size:.9rem;color:var(--muted);min-height:1.4em;text-align:center;transition:.2s;padding:0 16px 8px}
+  .note{background:var(--blue-soft);border-inline-start:4px solid var(--blue);border-radius:10px;
+    padding:12px 16px;margin:20px 0;font-size:.94rem}
+  .note b{color:var(--blue)}
+  .note.green{background:var(--green-soft);border-color:var(--green)}
+  .note.green b{color:var(--green)}
+  .note.amber{background:var(--amber-soft);border-color:var(--amber)}
+  .note.amber b{color:var(--amber)}
+  .watch{background:var(--amber-soft);border-inline-start:4px solid var(--amber);border-radius:10px;
+    padding:13px 17px;margin:6px 0 2px;font-size:.95rem}
+  .watch .wh{font-weight:700;color:var(--amber);display:block;margin-bottom:3px}
+  pre.calc{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow-x:auto;font-size:.9rem;line-height:1.75;margin:16px 0;white-space:pre}
+  pre.calc b{color:var(--accent)}
+  pre.calc .g{color:var(--muted)}
+  table.spec{width:100%;border-collapse:collapse;margin:16px 0;font-size:.92rem}
+  table.spec th,table.spec td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  table.spec th{background:var(--accent-soft);font-weight:700}
+  table.spec td.mono,table.spec td code{font-family:var(--mono)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.twocol{grid-template-columns:1fr}}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h5{margin:.1em 0 .5em;font-size:.98rem}
+  .card p{margin:.3em 0;font-size:.9rem;color:var(--muted)}
+  .chapnav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .chapnav a{flex:1;min-width:180px;text-decoration:none;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;color:inherit;transition:.15s}
+  .chapnav a:hover{border-color:var(--accent)}
+  .chapnav .dir{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .chapnav .lb{font-weight:600;color:var(--accent);margin-top:2px}
+  .chapnav a.disabled{opacity:.5;pointer-events:none}
+  footer{max-width:820px;margin:34px auto 0;padding:0 22px;color:var(--muted);font-size:.85rem;text-align:center}
+
+  /* ---- demo-specific styles ---- */
+  /* printf field layout demo */
+  .fld{display:flex;flex-direction:column;gap:14px;width:100%;max-width:540px;align-items:center}
+  .fld .fmt{font-family:var(--mono);font-size:1.05rem;color:var(--ink)}
+  .fld .fmt b{color:var(--accent)}
+  .cells{display:flex;gap:3px;justify-content:center}
+  .cell{width:30px;height:40px;border:1.5px solid var(--line);border-radius:5px;display:flex;align-items:center;
+    justify-content:center;font-family:var(--mono);font-size:1.05rem;font-weight:700;background:var(--panel);transition:.3s}
+  .cell.pad{color:var(--muted);background:var(--blue-soft);border-color:var(--blue)}
+  .cell.dig{background:var(--green-soft);border-color:var(--green);color:var(--ink)}
+  .cell.brk{background:transparent;border:none;color:var(--muted);width:16px}
+  .cell.empty{background:var(--panel);color:transparent}
+  .ruler{display:flex;gap:3px;justify-content:center;font-family:var(--mono);font-size:.66rem;color:var(--muted)}
+  .ruler span{width:30px;text-align:center}
+  .ruler span.brk{width:16px}
+  /* scanf buffer demo */
+  .buf{display:flex;flex-direction:column;gap:16px;width:100%;max-width:520px;align-items:center}
+  .buflabel{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  .bufcells{display:flex;gap:4px;justify-content:center}
+  .bc{width:38px;height:44px;border:1.5px solid var(--line);border-radius:6px;display:flex;align-items:center;
+    justify-content:center;font-family:var(--mono);font-size:1.05rem;font-weight:700;background:var(--panel);transition:.3s;position:relative}
+  .bc.eaten{background:var(--accent-soft);border-color:var(--accent);color:var(--muted);text-decoration:line-through}
+  .bc.hot{background:var(--amber-soft);border-color:var(--amber);color:var(--ink);box-shadow:0 0 0 3px var(--amber-soft)}
+  .bc.nl{color:var(--blue)}
+  .vars{display:flex;gap:22px;justify-content:center;font-family:var(--mono);font-size:.95rem}
+  .vars .v{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .vars .v .vn{font-size:.72rem;color:var(--muted)}
+  .vars .v .vv{min-width:54px;text-align:center;background:var(--panel);border:1.5px solid var(--line);
+    border-radius:6px;padding:5px 8px;transition:.3s}
+  .vars .v .vv.set{border-color:var(--green);background:var(--green-soft)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="kicker">First-Year Programming · Lecture 4</div>
+  <h1>Input and Output</h1>
+  <div class="sub">printf and scanf format specifiers, the address-of operator, C++ streams, reading characters, and structured linear programs</div>
+  <div class="instructor">
+    <span class="iname">Dr. Ali Mahmoud Mansour</span>
+    <span class="ispec">PhD in Artificial Intelligence and Machine Learning</span>
+    <a class="ipage" href="https://sfedu.ru/s7/person/ru/mansur" target="_blank" rel="noopener">Personal page</a>
+  </div>
+</header>
+
+<div class="langbar">
+  <div class="inner">
+    <a class="home" href="index.html">← Contents</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="chapter">
+    <h2>§1 · Output: <code>printf</code> and Format Specifiers</h2>
+    <p class="lead">A format specifier is a contract between you and the runtime. A wrong specifier — <code>%d</code> for a <code>double</code> — is not an error; it is silent garbage.</p>
+    <div class="prose">
+      <p>The call <code>printf(format, arg1, arg2, …)</code> prints its format string verbatim, except that each <code>%</code> conversion consumes one argument, left to right, and formats it. One <code>%</code> per argument.</p>
+      <p>The general shape of a conversion is <code>%[flags][width][.precision]type</code>. The <strong>type</strong> letter says how to read the bytes; <strong>width</strong> is the minimum field width (it pads, never truncates); <strong>.precision</strong> is the number of digits after the decimal point for <code>%f</code>/<code>%e</code> (default 6) or the maximum characters for <code>%s</code>; the <strong>flags</strong> <code>-</code> (left-align), <code>0</code> (zero-pad) and <code>+</code> (force sign) fine-tune the layout.</p>
+    </div>
+
+    <table class="spec">
+      <tr><th>Type</th><th>Specifier</th><th>Example</th><th>Output</th></tr>
+      <tr><td><code>int</code></td><td><code>%d</code></td><td><code>printf("%d", 42)</code></td><td class="mono">42</td></tr>
+      <tr><td><code>long</code></td><td><code>%ld</code></td><td><code>printf("%ld", 2000000000L)</code></td><td class="mono">2000000000</td></tr>
+      <tr><td><code>double</code></td><td><code>%f</code></td><td><code>printf("%f", 3.14)</code></td><td class="mono">3.140000</td></tr>
+      <tr><td><code>double</code> (sci.)</td><td><code>%e</code></td><td><code>printf("%e", 3.14)</code></td><td class="mono">3.140000e+00</td></tr>
+      <tr><td><code>double</code> (compact)</td><td><code>%g</code></td><td><code>printf("%g", 3.14)</code></td><td class="mono">3.14</td></tr>
+      <tr><td><code>char</code></td><td><code>%c</code></td><td><code>printf("%c", 65)</code></td><td class="mono">A</td></tr>
+      <tr><td>string</td><td><code>%s</code></td><td><code>printf("%s", "hi")</code></td><td class="mono">hi</td></tr>
+      <tr><td>literal <code>%</code></td><td><code>%%</code></td><td><code>printf("100%%")</code></td><td class="mono">100%</td></tr>
+    </table>
+
+<pre class="calc">
+printf(<b>"[%8d]"</b>,    42);       <span class="g">// [      42]   right-aligned in 8 chars</span>
+printf(<b>"[%-8d]"</b>,   42);       <span class="g">// [42      ]   left-aligned</span>
+printf(<b>"[%08d]"</b>,   42);       <span class="g">// [00000042]   zero-padded</span>
+printf(<b>"[%+d]"</b>,    42);       <span class="g">// [+42]        always show sign</span>
+printf(<b>"[%8.2f]"</b>,  3.14159);  <span class="g">// [    3.14]   width 8, 2 decimals</span>
+printf(<b>"[%.4f]"</b>,   3.14159);  <span class="g">// [3.1416]     4 decimals, no min width</span>
+</pre>
+
+    <div class="note"><b>%e and %g:</b> <code>%e</code> is always scientific notation (<code>1.234568e+05</code>); <code>%g</code> picks the shorter of <code>%f</code>/<code>%e</code> and strips trailing zeros. For this course, prefer <code>%f</code> with an explicit precision when you know the magnitude.</div>
+
+    <div class="demo" id="d-fld">
+      <div class="dhead"><span class="dot"></span><h4>Field-Width &amp; Precision Trace — <code>printf("[%8.2f]", 3.14159)</code></h4><span class="tag">animated</span></div>
+      <div class="stage" id="fld-stage"></div>
+      <div class="caption" id="fld-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="fld-play" onclick="FLD.play()">▶ Play</button>
+        <button class="ctrl" id="fld-step" onclick="FLD.step()">⏭ Step</button>
+        <button class="ctrl" onclick="FLD.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      The <code>.2</code> precision runs <em>first</em>, rounding <code>3.14159</code> to the four characters <code>3.14</code>. Only then does the <code>8</code> width look at the result: four characters in an eight-wide field means four spaces of left-padding (right-alignment is the default). Width never shortens a value — if the number were already wider than 8, all its digits would still print and the field would simply grow. That is why prices formatted with the same <code>%8.2f</code> line their decimal points up in a column.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§2 · Input: <code>scanf</code> and the Address-of Operator</h2>
+    <p class="lead"><code>printf</code> needs the <em>value</em> to print; <code>scanf</code> needs the <em>address</em> to write to. That is why every <code>scanf</code> variable gets a <code>&amp;</code>.</p>
+    <div class="prose">
+      <p><code>&amp;age</code> is the "address-of <code>age</code>" — the slot in memory where <code>scanf</code> will store what it reads. Omit the <code>&amp;</code> and you hand <code>scanf</code> the variable's current (garbage) value and tell it to treat that as an address: undefined behaviour, usually a crash. The one exception is an array name such as <code>char name[50]</code>, which is <em>already</em> an address.</p>
+      <p>The specifiers match <code>printf</code> with one critical asymmetry — the <strong><code>%lf</code> trap</strong>. In <code>printf</code> a <code>float</code> is promoted to <code>double</code>, so <code>%f</code> prints both; in <code>scanf</code> there is no promotion, so a <code>double</code> must use <code>%lf</code> (8 bytes) — using <code>%f</code> writes only 4 bytes and corrupts the value silently.</p>
+    </div>
+
+    <table class="spec">
+      <tr><th>Variable type</th><th><code>printf</code></th><th><code>scanf</code></th></tr>
+      <tr><td><code>int</code></td><td class="mono">%d</td><td class="mono">%d</td></tr>
+      <tr><td><code>float</code></td><td class="mono">%f</td><td class="mono">%f</td></tr>
+      <tr><td><code>double</code></td><td class="mono">%f</td><td class="mono"><b>%lf</b> ← different</td></tr>
+      <tr><td><code>long</code></td><td class="mono">%ld</td><td class="mono">%ld</td></tr>
+      <tr><td><code>char</code></td><td class="mono">%c</td><td class="mono">%c</td></tr>
+    </table>
+
+<pre class="calc">
+int age;
+scanf("%d", <b>age</b>);      <span class="g">// WRONG — garbage value used as an address</span>
+scanf("%d", <b>&amp;age</b>);     <span class="g">// CORRECT — &amp;age is the address of the variable</span>
+
+double x;
+scanf(<b>"%f"</b>,  &amp;x);     <span class="g">// WRONG — writes 4 bytes into an 8-byte variable</span>
+scanf(<b>"%lf"</b>, &amp;x);     <span class="g">// CORRECT</span>
+
+<span class="g">// scanf returns the number of items successfully read:</span>
+if (scanf("%d %lf", &amp;n, &amp;x) <b>!= 2</b>) puts("Bad input");
+</pre>
+
+    <div class="demo" id="d-buf">
+      <div class="dhead"><span class="dot"></span><h4>The Input Buffer &amp; the Newline Trap — reading <code>42⏎</code> then a char</h4><span class="tag">animated</span></div>
+      <div class="stage" id="buf-stage"></div>
+      <div class="caption" id="buf-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="buf-play" onclick="BUF.play()">▶ Play</button>
+        <button class="ctrl" id="buf-step" onclick="BUF.step()">⏭ Step</button>
+        <button class="ctrl" onclick="BUF.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      <code>scanf("%d", &amp;n)</code> consumes the digits <code>4</code> and <code>2</code> and then <em>stops</em> — it leaves the <code>\n</code> the user pressed sitting in the buffer. The next <code>scanf("%c", &amp;c)</code> finds that <code>\n</code> already waiting and reads it instantly, so the user never gets to type. The address-of <code>&amp;</code> is what lets each call write straight into <code>n</code> and <code>c</code>. The fix is one space: <code>scanf(" %c", &amp;c)</code> — a space in a format string skips any leading whitespace, including the stray newline.
+    </div>
+
+    <div class="note amber"><b>The fix, once more:</b> put a space before <code>%c</code> every time you read a character after a number — <code>scanf(" %c", &amp;c)</code>. The space skips the buffered <code>\n</code>; <code>%d</code>, <code>%f</code> and <code>%s</code> already skip leading whitespace, which is why only <code>%c</code> is bitten.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§3 · C++ Streams: <code>cout</code> and <code>cin</code></h2>
+    <p class="lead">C++ offers a type-safe alternative to <code>printf</code>/<code>scanf</code>: no format specifiers and no <code>&amp;</code>, because the type is resolved at compile time.</p>
+    <div class="prose">
+      <p><code>cout &lt;&lt;</code> is the "put to" operator and <code>cin &gt;&gt;</code> is the "get from" operator. Both <em>chain</em> — <code>cout &lt;&lt; a &lt;&lt; " " &lt;&lt; b &lt;&lt; "\n"</code> — reading left to right. Because <code>n</code> is declared <code>int</code>, <code>cin &gt;&gt; n</code> reads an integer; a mismatched type here is a compile-time error, not the runtime bug a wrong <code>scanf</code> specifier would cause.</p>
+    </div>
+<pre class="calc">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+int n; double x;
+cout &lt;&lt; "Enter n: "; <b>cin &gt;&gt; n;</b>          <span class="g">// no &amp;, no specifier</span>
+cout &lt;&lt; "Enter x: "; <b>cin &gt;&gt; x;</b>
+
+cout &lt;&lt; "hello" &lt;&lt; <b>endl</b>;               <span class="g">// endl = '\n' + flush the buffer</span>
+cout &lt;&lt; <b>fixed &lt;&lt; setprecision(2)</b> &lt;&lt; 3.14159 &lt;&lt; "\n";  <span class="g">// 3.14 (persists)</span>
+cout &lt;&lt; <b>setw(10)</b> &lt;&lt; 42 &lt;&lt; "\n";        <span class="g">//         42 (next item only)</span>
+</pre>
+    <div class="note green"><b><code>&lt;iomanip&gt;</code> rules:</b> <code>fixed</code> and <code>setprecision(n)</code> persist for the stream's lifetime; <code>setw(n)</code> applies to the <em>next item only</em> and must be repeated. <code>endl</code> flushes (a syscall per line) — prefer <code>"\n"</code> in loops, <code>endl</code> for interactive prompts.</div>
+    <div class="note"><b>The buffer trap resurfaces</b> when you mix <code>&gt;&gt;</code> with <code>getline</code>: <code>cin &gt;&gt; n;</code> then <code>cin.ignore();</code> (discard the leftover <code>\n</code>) then <code>getline(cin, s);</code>. Same principle as the <code>scanf</code> newline trap in §2 — <code>&gt;&gt;</code> read the number and left the terminator behind.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§4 · Reading Characters and Strings</h2>
+    <p class="lead">Single characters and whole lines each have a safe idiom — and a classic trap in the functions you should avoid.</p>
+    <div class="prose">
+      <p>Read one character with <code>scanf(" %c", &amp;c)</code> (leading space) or with <code>getchar()</code>. Crucially, <code>getchar()</code> returns <strong><code>int</code></strong>, not <code>char</code>: the sentinel <code>EOF</code> (typically <code>-1</code>) must be distinguishable from every valid character, and on platforms where <code>char</code> is unsigned it cannot hold <code>-1</code>. Store the result in an <code>int</code> before comparing with <code>EOF</code>.</p>
+      <p><code>%s</code> reads a single word — it stops at the first whitespace. To read a full line including spaces, use <code>fgets(buffer, sizeof(buffer), stdin)</code>, which reads at most <code>size - 1</code> characters and cannot overflow. Its unsafe predecessor <code>gets</code> was removed from C11 for exactly that reason — never use it.</p>
+    </div>
+<pre class="calc">
+char c;
+scanf(" %c", &amp;c);            <span class="g">// leading space skips whitespace</span>
+
+<b>int ch = getchar();</b>          <span class="g">// returns int so EOF (-1) is representable</span>
+if (ch == EOF) { <span class="g">/* input closed */</span> }
+
+char name[50];
+scanf("%s", name);           <span class="g">// no &amp; — an array is already an address; one word</span>
+<b>fgets(name, sizeof(name), stdin);</b>  <span class="g">// full line, safe (never use gets)</span>
+</pre>
+  </section>
+
+  <section class="chapter">
+    <h2>§5 · Structured Linear Programs: Read → Compute → Write</h2>
+    <p class="lead">Every simple program that has no branches or loops yet shares one shape. Making it explicit is the most transferable habit of first-year programming.</p>
+    <div class="prose">
+      <p>Gather <em>all</em> inputs first, derive <em>all</em> results, then print <em>all</em> outputs. Scattering <code>scanf</code> calls between <code>printf</code> calls produces programs that are hard to read and impossible to test; every function you will ever write is a smaller version of this same three-phase shape.</p>
+    </div>
+<pre class="calc">
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    <b>/* READ */</b>
+    double celsius;
+    printf("Enter temperature in Celsius: ");
+    scanf(<b>"%lf"</b>, &amp;celsius);            <span class="g">// %lf — celsius is a double</span>
+
+    <b>/* COMPUTE */</b>
+    double fahrenheit = celsius * 9.0 / 5.0 + 32.0;  <span class="g">// 9.0/5.0, not 9/5 (L03)</span>
+    double kelvin     = celsius + 273.15;
+
+    <b>/* WRITE */</b>
+    printf("%-12s %12s %12s\n", "Celsius", "Fahrenheit", "Kelvin");
+    printf("%-12.2f %12.2f %12.2f\n", celsius, fahrenheit, kelvin);
+    return 0;
+}
+</pre>
+    <div class="note green"><b>Why it lines up:</b> <code>%-12s</code> left-aligns each header in 12 characters; <code>%12.2f</code> right-aligns each number in 12 characters with 2 decimals, so every decimal point sits under the same column. The structure never changes — reading three values instead of one only changes the count, not the shape.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>Chapter summary</h2>
+    <div class="twocol">
+      <div class="card">
+        <h5>🎬 You just covered</h5>
+        <p><code>printf</code> specifiers &amp; <code>%[flags][width][.precision]type</code> — the format string is an unverified contract · <code>scanf</code> needs <code>&amp;</code> (the address) and <code>%lf</code> for <code>double</code>; the newline-in-buffer trap and the space-before-<code>%c</code> fix · C++ <code>cout</code>/<code>cin</code>, <code>endl</code>, <code>&lt;iomanip&gt;</code>, <code>cin.ignore()</code> · <code>getchar()</code> returns <code>int</code>; <code>fgets</code> over <code>gets</code> · read → compute → write.</p>
+      </div>
+      <div class="card">
+        <h5>📄 Text reference</h5>
+        <p>The full written handout (same content, no animation) is the printable study copy: <span class="mono">L04-student-handout.md</span>, also as PDF.</p>
+      </div>
+    </div>
+
+    <div class="chapnav">
+      <a href="lecture-03.html"><span class="dir">Previous</span><div class="lb">← Lecture 3</div></a>
+      <a href="index.html"><span class="dir">Contents</span><div class="lb">All lectures</div></a>
+      <a href="lecture-05.html"><span class="dir">Next</span><div class="lb">Lecture 5 →</div></a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  First-Year Programming · Lecture 4 — Input and Output<br>
+  © 2026 Dr. Ali Mahmoud Mansour · All rights reserved. Content &amp; concept: Dr. Ali Mahmoud Mansour · Co-created with Claude (Anthropic).
+  <span aria-hidden="true">⁠​‌​​‌‌‌‌​‌​‌​‌‌‌​‌​​‌‌‌​​‌​​​‌​‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​​‌​‌​​‌‌​​​‌​​‌​​‌​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌​​​​‌​​‌‌​‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​​​‌​​​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌‌‌​​‌​‌​​‌‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​‌​​‌​​​‌‌‌​‌‌​‌​​​​‌‌​‌​​‌‌‌‌​​‌​‌‌​‌​‌​​​​‌‌​‌​‌​​‌​​‌​​​‌​‌​‌​​​​​‌​‌​‌​‌​​​‌​​‌‌‌‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​‌‌​‌​​‌‌​​​‌​​​​​‌​‌​‌​‌​‌​‌​​​‌​​​‌​​​‌​‌​​‌‌‌​‌‌​‌​‌‌​​‌​‌​​​‌​‌​‌​​​​​‌​‌​‌​​‌​​​‌‌‌‌​‌​​‌‌​​‌​​​‌‌​​​​​​‌‌​​‌​​​‌‌​‌‌​⁠</span>
+</footer>
+
+<script>
+/* ============================================================
+   DEMO 1 — printf Field-Width & Precision Trace  (FLD)
+   Traces printf("[%8.2f]", 3.14159) → [    3.14]
+   ============================================================ */
+const FLD = (function() {
+  var stage = document.getElementById('fld-stage');
+  var cap   = document.getElementById('fld-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  // The 8-wide field, final content: 4 spaces + "3.14"
+  var FIELD = [' ', ' ', ' ', ' ', '3', '.', '1', '4'];
+
+  var STEPS = [
+    {show: 'none', msg: 'Goal: format the double 3.14159 with the specifier %8.2f.'},
+    {show: 'prec', msg: 'Precision .2 runs first: round 3.14159 to 2 decimals → "3.14" (4 characters).'},
+    {show: 'width', msg: 'Width 8: the field must be 8 wide. 4 chars used → pad 4 spaces on the LEFT (right-aligned).'},
+    {show: 'field', msg: 'Field complete: "    3.14" — 4 spaces then the 4 digit characters.'},
+    {show: 'brk',  msg: 'The literal [ and ] print verbatim: [    3.14]. Width pads, it never truncates.'}
+  ];
+
+  function build() {
+    var ruler = '<div class="ruler"><span class="brk"></span>' +
+      '<span>1</span><span>2</span><span>3</span><span>4</span>' +
+      '<span>5</span><span>6</span><span>7</span><span>8</span>' +
+      '<span class="brk"></span></div>';
+    var cells = '<div class="cells"><span class="cell brk" id="fc-l">&nbsp;</span>';
+    for (var i = 0; i < 8; i++) {
+      cells += '<span class="cell empty" id="fc' + i + '">.</span>';
+    }
+    cells += '<span class="cell brk" id="fc-r">&nbsp;</span></div>';
+    stage.innerHTML =
+      '<div class="fld">' +
+        '<div class="fmt">printf(<b>"[%8.2f]"</b>, 3.14159)</div>' +
+        cells + ruler +
+      '</div>';
+  }
+
+  function fillDigits() {
+    for (var i = 4; i < 8; i++) {
+      var el = document.getElementById('fc' + i);
+      if (el) { el.textContent = FIELD[i]; el.className = 'cell dig'; }
+    }
+  }
+  function fillPad() {
+    for (var i = 0; i < 4; i++) {
+      var el = document.getElementById('fc' + i);
+      if (el) { el.innerHTML = '&middot;'; el.className = 'cell pad'; }
+    }
+  }
+  function showBrackets() {
+    var l = document.getElementById('fc-l');
+    var r = document.getElementById('fc-r');
+    if (l) { l.textContent = '['; }
+    if (r) { r.textContent = ']'; }
+  }
+
+  function applyStep(s) {
+    if (s.show === 'prec') { fillDigits(); }
+    else if (s.show === 'width') { fillPad(); }
+    else if (s.show === 'field') { fillDigits(); fillPad(); }
+    else if (s.show === 'brk') { fillDigits(); fillPad(); showBrackets(); }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('fld-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('fld-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 900);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to trace %8.2f applied to 3.14159.';
+    var btn = document.getElementById('fld-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+
+/* ============================================================
+   DEMO 2 — The Input Buffer & the Newline Trap  (BUF)
+   Traces: user types "42<Enter>", then scanf("%d",&n) and
+   scanf("%c",&c) — showing why %c grabs the leftover '\n'.
+   ============================================================ */
+const BUF = (function() {
+  var stage = document.getElementById('buf-stage');
+  var cap   = document.getElementById('buf-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  // buffer cells: '4', '2', '\n' (shown as the glyph)
+  var CHARS = ['4', '2', '\u23CE'];
+
+  var STEPS = [
+    {eat: [], hot: [], n: '?', c: "'?'", nset: false, cset: false,
+     msg: 'The user types 42 then presses Enter. The buffer holds: 4  2  \u23CE (newline).'},
+    {eat: [0, 1], hot: [], n: '42', c: "'?'", nset: true, cset: false,
+     msg: 'scanf("%d", &n): reads 4 and 2 into n = 42, then STOPS. The \u23CE is left in the buffer.'},
+    {eat: [0, 1], hot: [2], n: '42', c: "'\\n'", nset: true, cset: true,
+     msg: 'scanf("%c", &c): the \u23CE is already waiting, so c = \'\\n\' immediately — the user never types. THE TRAP.'},
+    {eat: [0, 1, 2], hot: [], n: '42', c: "input", nset: true, cset: false,
+     msg: 'Fix: scanf(" %c", &c). The leading space skips the \u23CE, so scanf waits for a real character.'}
+  ];
+
+  function build() {
+    var cells = '';
+    for (var i = 0; i < CHARS.length; i++) {
+      var cls = (i === 2) ? 'bc nl' : 'bc';
+      cells += '<span class="' + cls + '" id="bc' + i + '">' + CHARS[i] + '</span>';
+    }
+    stage.innerHTML =
+      '<div class="buf">' +
+        '<div class="buflabel">stdin input buffer</div>' +
+        '<div class="bufcells">' + cells + '</div>' +
+        '<div class="vars">' +
+          '<div class="v"><span class="vn">int n</span><span class="vv" id="var-n">?</span></div>' +
+          '<div class="v"><span class="vn">char c</span><span class="vv" id="var-c">\'?\'</span></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function applyStep(s) {
+    var i;
+    for (i = 0; i < CHARS.length; i++) {
+      var el = document.getElementById('bc' + i);
+      if (!el) { continue; }
+      el.className = (i === 2) ? 'bc nl' : 'bc';
+      if (s.eat.indexOf(i) !== -1) { el.className += ' eaten'; }
+      if (s.hot.indexOf(i) !== -1) { el.className += ' hot'; }
+    }
+    var nEl = document.getElementById('var-n');
+    var cEl = document.getElementById('var-c');
+    if (nEl) { nEl.textContent = s.n; nEl.className = s.nset ? 'vv set' : 'vv'; }
+    if (cEl) { cEl.textContent = s.c; cEl.className = s.cset ? 'vv set' : 'vv'; }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('buf-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('buf-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 1100);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to trace scanf reading "42" then a character.';
+    var btn = document.getElementById('buf-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+</script>
+</body>
+</html>
