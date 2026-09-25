@@ -1,0 +1,660 @@
+<!doctype html>
+<!--
+  interactive-book · CHAPTER — Lecture 7: Strings (lecture-07.html)
+  Origin: chunk C02 of the chunked run (serial 039) for activity
+    [[260816-001-activity]] ("programming"). Built from _chapter-template.html,
+    content sourced from L07-student-handout.md + L07-instructor-guide.md;
+    styles/watermark/footer signature mirror lecture-05.html / lecture-06.html.
+    Satisfies interactive-book-build-standard §1 (self-contained) · §2 (≥2 .demo
+    animations) · §3 (.watch boxes) · §4 (node --check) · §6 (instructor block) ·
+    §7 (3-layer ownership watermark). Version: v0.1 · 2026-09-25.
+-->
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strings — Interactive Book</title>
+<!-- ===== ownership watermark · Layer 2 (build standard §7) — schema.org CreativeWork.
+     Scheme + detection method: [[260831-001-copyright-watermark-note]]. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Strings",
+  "inLanguage": "en",
+  "copyrightYear": 2026,
+  "copyrightHolder": { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "creator":         { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "author":          { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "contributor":     { "@type": "Person", "name": "Claude (Anthropic)" },
+  "publisher":       { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "copyrightNotice": "© 2026 Dr. Ali Mahmoud Mansour. All rights reserved.",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creditText": "Content and concept by Dr. Ali Mahmoud Mansour; co-created with Claude (Anthropic).",
+  "identifier": "OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026"
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
+    --line:#e7e0d6; --accent:#1f6f6b; --accent-soft:#dcefec;
+    --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
+    --amber:#b8890f; --amber-soft:#f7edcf; --red:#c0392b; --red-soft:#f9e0dc;
+    --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
+    --radius:16px;
+    --serif:"Iowan Old Style",Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Fira Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
+      --line:#2c333d; --accent:#4fb3ab; --accent-soft:#16302e;
+      --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
+      --amber:#d8ab3a; --amber-soft:#2c2411; --red:#e8776a; --red-soft:#2e1613;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;margin:0}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 90px}
+  header.mast{
+    background:linear-gradient(135deg,var(--accent) 0%,#145048 100%);
+    color:#fff;padding:46px 22px 40px;text-align:center;position:relative;overflow:hidden}
+  header.mast::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+  .mast .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:.68rem;opacity:.8;font-weight:600}
+  .mast h1{font-family:var(--serif);font-size:clamp(1.5rem,4.5vw,2.4rem);margin:.1em 0 .15em;font-weight:600;letter-spacing:-.01em}
+  .mast .sub{opacity:.92;font-size:1rem;max-width:640px;margin:.2em auto 0}
+  .instructor{position:relative;z-index:1;max-width:560px;margin:20px auto 0;padding:13px 18px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:12px;
+    backdrop-filter:blur(3px);display:flex;flex-direction:column;gap:3px;align-items:center}
+  .instructor .iname{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:#fff}
+  .instructor .ispec{font-size:.85rem;opacity:.92}
+  .instructor .ipage{font-size:.85rem;color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .instructor .ipage:hover{opacity:.85}
+  .langbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 0}
+  .langbar .inner{max-width:820px;margin:0 auto;padding:0 22px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .langbar .home{font-size:.82rem;color:var(--muted);font-weight:600;text-decoration:none}
+  .langbar .home:hover{color:var(--accent)}
+  section.chapter{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:34px clamp(20px,4vw,44px);margin-top:26px}
+  .chapter > h2{font-family:var(--serif);font-size:1.5rem;margin:.1em 0 .1em;font-weight:600}
+  .chapter > .lead{color:var(--muted);margin:.2em 0 1.4em;font-size:1.02rem}
+  p{margin:.9em 0}
+  .prose{font-family:var(--serif);font-size:1.08rem}
+  .mono{font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);border-radius:4px;padding:1px 5px}
+  .demo{border:1px solid var(--line);border-radius:14px;margin:22px 0;overflow:hidden;background:var(--bg)}
+  .demo .dhead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .demo .dhead .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+  .demo .dhead h4{margin:0;font-size:.92rem;font-weight:700;letter-spacing:.01em}
+  .demo .dhead .tag{margin-inline-start:auto;font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .demo .stage{padding:22px 16px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .demo .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 16px 16px}
+  button.ctrl{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:600;
+    font-size:.84rem;padding:7px 14px;border-radius:10px;cursor:pointer;transition:.15s;display:inline-flex;gap:6px;align-items:center}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+  button.ctrl.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.ctrl.primary:hover{filter:brightness(1.05);color:#fff}
+  button.ctrl:disabled{opacity:.4;cursor:default;border-color:var(--line);color:var(--muted)}
+  .caption{font-size:.9rem;color:var(--muted);min-height:1.4em;text-align:center;transition:.2s;padding:0 16px 8px}
+  .note{background:var(--blue-soft);border-inline-start:4px solid var(--blue);border-radius:10px;
+    padding:12px 16px;margin:20px 0;font-size:.94rem}
+  .note b{color:var(--blue)}
+  .note.green{background:var(--green-soft);border-color:var(--green)}
+  .note.green b{color:var(--green)}
+  .note.amber{background:var(--amber-soft);border-color:var(--amber)}
+  .note.amber b{color:var(--amber)}
+  .note.red{background:var(--red-soft);border-color:var(--red)}
+  .note.red b{color:var(--red)}
+  .watch{background:var(--amber-soft);border-inline-start:4px solid var(--amber);border-radius:10px;
+    padding:13px 17px;margin:6px 0 2px;font-size:.95rem}
+  .watch .wh{font-weight:700;color:var(--amber);display:block;margin-bottom:3px}
+  pre.calc{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow-x:auto;font-size:.9rem;line-height:1.75;margin:16px 0;white-space:pre}
+  pre.calc b{color:var(--accent)}
+  pre.calc .g{color:var(--muted)}
+  pre.calc .r{color:var(--red);font-weight:700}
+  table.spec{width:100%;border-collapse:collapse;margin:16px 0;font-size:.92rem}
+  table.spec th,table.spec td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  table.spec th{background:var(--accent-soft);font-weight:700}
+  table.spec td.mono,table.spec td code{font-family:var(--mono)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.twocol{grid-template-columns:1fr}}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h5{margin:.1em 0 .5em;font-size:.98rem}
+  .card p{margin:.3em 0;font-size:.9rem;color:var(--muted)}
+  .chapnav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .chapnav a{flex:1;min-width:180px;text-decoration:none;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;color:inherit;transition:.15s}
+  .chapnav a:hover{border-color:var(--accent)}
+  .chapnav .dir{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .chapnav .lb{font-weight:600;color:var(--accent);margin-top:2px}
+  .chapnav a.disabled{opacity:.5;pointer-events:none}
+  footer{max-width:820px;margin:34px auto 0;padding:0 22px;color:var(--muted);font-size:.85rem;text-align:center}
+
+  /* ---- demo-specific styles ---- */
+  /* char-array cells (null-terminator memory layout) */
+  .strbox{display:flex;flex-direction:column;gap:16px;width:100%;max-width:600px;align-items:center}
+  .strhdr{font-family:var(--mono);font-size:.95rem;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center}
+  .strhdr b{color:var(--accent)}
+  .strrow{display:flex;gap:0}
+  .ccell{width:62px;display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--line);
+    border-inline-start-width:.75px;border-inline-end-width:.75px;background:var(--panel);transition:.3s}
+  .strrow .ccell:first-child{border-inline-start-width:1.5px;border-top-left-radius:8px;border-bottom-left-radius:8px}
+  .strrow .ccell:last-child{border-inline-end-width:1.5px;border-top-right-radius:8px;border-bottom-right-radius:8px}
+  .ccell.hot{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-6px);
+    box-shadow:0 6px 14px rgba(31,111,107,.25)}
+  .ccell.nul{background:var(--amber-soft);border-color:var(--amber)}
+  .ccell.nul.hot{background:var(--amber-soft);border-color:var(--amber);box-shadow:0 6px 14px rgba(184,137,15,.3)}
+  .ccell.counted{border-color:var(--green);background:var(--green-soft)}
+  .ccell .cv{font-family:var(--mono);font-size:1.2rem;font-weight:700;padding:10px 0 4px}
+  .ccell .ca{font-family:var(--mono);font-size:.66rem;color:var(--blue);padding-bottom:3px}
+  .ccell .ci{font-family:var(--mono);font-size:.62rem;color:var(--muted);border-top:1px dashed var(--line);
+    width:100%;text-align:center;padding:3px 0}
+  .ccell.nul .cv{color:var(--amber)}
+  .streq{font-family:var(--mono);font-size:1rem;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:9px 15px;color:var(--ink);min-height:1.7em;text-align:center}
+  .streq b{color:var(--accent)}
+  .streq .amb{color:var(--amber);font-weight:700}
+  /* stack buffer-overflow demo */
+  .stackbox{display:flex;flex-direction:column;gap:6px;width:100%;max-width:520px;align-items:center}
+  .stacklbl{font-family:var(--mono);font-size:.8rem;color:var(--muted);align-self:center}
+  .stackrow{display:flex;gap:0}
+  .scell{width:52px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:1.5px solid var(--line);border-inline-start-width:.75px;border-inline-end-width:.75px;
+    background:var(--panel);transition:.25s}
+  .stackrow .scell:first-child{border-inline-start-width:1.5px;border-top-left-radius:8px;border-bottom-left-radius:8px}
+  .stackrow .scell:last-child{border-inline-end-width:1.5px;border-top-right-radius:8px;border-bottom-right-radius:8px}
+  .scell.name{background:var(--accent-soft)}
+  .scell.secret{background:var(--blue-soft)}
+  .scell.hot{transform:translateY(-5px);box-shadow:0 6px 14px rgba(40,30,20,.2)}
+  .scell.overflow{background:var(--red-soft);border-color:var(--red)}
+  .scell .sv{font-family:var(--mono);font-size:1.05rem;font-weight:700}
+  .scell.overflow .sv{color:var(--red)}
+  .scell .si{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px}
+  .stacktags{display:flex;gap:0;width:100%;max-width:520px}
+  .stag{text-align:center;font-family:var(--mono);font-size:.68rem;font-weight:700}
+  .stag.nametag{color:var(--accent)}
+  .stag.secrettag{color:var(--blue)}
+  .stackeq{font-family:var(--mono);font-size:1rem;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:9px 15px;min-height:1.7em;text-align:center}
+  .stackeq b{color:var(--red)}
+  .stackeq .ok{color:var(--green);font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="kicker">First-Year Programming · Lecture 7</div>
+  <h1>Strings</h1>
+  <div class="sub">How text is stored as a <code>char</code> array ending in the null terminator, the three initialization styles and the read-only-literal trap, reading input safely, the standard <code>&lt;string.h&gt;</code> functions and their overflow pitfalls, buffer overflow, and C++ <code>std::string</code></div>
+  <div class="instructor">
+    <span class="iname">Dr. Ali Mahmoud Mansour</span>
+    <span class="ispec">PhD in Artificial Intelligence and Machine Learning</span>
+    <a class="ipage" href="https://sfedu.ru/s7/person/ru/mansur" target="_blank" rel="noopener">Personal page</a>
+  </div>
+</header>
+
+<div class="langbar">
+  <div class="inner">
+    <a class="home" href="index.html">← Contents</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="chapter">
+    <h2>§1 · What Is a String? The Null Terminator</h2>
+    <p class="lead">A computer only stores numbers. A <strong>string</strong> in C is simply a <code>char</code> array whose last element is the <strong>null terminator</strong> <code>'\0'</code> — the zero byte that marks where the text ends. There is no length stored separately; that one sentinel byte is the whole convention.</p>
+    <div class="prose">
+      <p>Each character is one byte holding its ASCII code — <code>'H'</code> is <code>72</code>, <code>'e'</code> is <code>101</code>, and so on. The null terminator is stored as <code>0</code> (not the digit <code>'0'</code>, which is <code>48</code>). When you write:</p>
+    </div>
+<pre class="calc">
+char greeting[] = "Hello";   <span class="g">// 5 letters + 1 hidden '\0' = 6 bytes</span>
+</pre>
+    <div class="prose">
+      <p>the compiler lays the six bytes out back to back and appends the terminator for you. Two questions about the same array give <em>different</em> answers, and knowing why is the heart of this chapter:</p>
+    </div>
+<pre class="calc">
+sizeof(greeting)   <span class="g">// 6 - every byte ALLOCATED, terminator included</span>
+strlen(greeting)   <span class="g">// 5 - characters only, counted UP TO the '\0'</span>
+</pre>
+    <div class="note"><b>The mental model:</b> a C string is a row of boxes with a "STOP" sign at the end. <code>sizeof</code> counts every box that was reserved; <code>strlen</code> walks from the front and stops the instant it reaches the STOP sign — so it never counts the sign itself. Miss the sign entirely and <code>strlen</code> keeps walking into whatever memory follows.</div>
+
+    <div class="demo" id="d-str">
+      <div class="dhead"><span class="dot"></span><h4>The null terminator — <code>sizeof</code> vs <code>strlen</code></h4><span class="tag">animated</span></div>
+      <div class="stage" id="str-stage"></div>
+      <div class="caption" id="str-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="str-play" onclick="STR.play()">▶ Play</button>
+        <button class="ctrl" id="str-step" onclick="STR.step()">⏭ Step</button>
+        <button class="ctrl" onclick="STR.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      <code>strlen</code> walks the boxes left to right and increments its counter for each real character — but the moment it lands on the amber <code>'\0'</code> box it <strong>stops and does not count it</strong>, ending at <strong>5</strong>. <code>sizeof</code>, in contrast, is decided at compile time from the declaration: it reports every byte reserved — all <strong>6</strong>, terminator included. That gap of exactly one is the null terminator, and it is why you must always allocate <code>strlen + 1</code> bytes to hold a string.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§2 · Declaring and Initializing Strings</h2>
+    <p class="lead">There are three ways to bring a string into existence, and they are not interchangeable — one of them puts your text in <strong>read-only</strong> memory, and writing to it crashes the program.</p>
+    <div class="prose">
+      <p>Compare the three styles side by side:</p>
+    </div>
+<pre class="calc">
+char s1[] = "Hello";      <span class="g">// (a) array, size inferred = 6; MODIFIABLE</span>
+char s2[10] = "Hello";    <span class="g">// (b) array, 10 bytes; 4 unused; MODIFIABLE</span>
+char *s3 = "Hello";       <span class="g">// (c) pointer to a read-only literal; DO NOT MODIFY</span>
+</pre>
+    <table class="spec">
+      <tr><th>Form</th><th>Where the bytes live</th><th>Can you change it?</th></tr>
+      <tr><td class="mono">char s1[]</td><td>on the stack, 6 bytes copied in</td><td>Yes — <code>s1[0]='h'</code> is fine</td></tr>
+      <tr><td class="mono">char s2[10]</td><td>on the stack, 10 bytes (6–9 zeroed)</td><td>Yes — room for up to 9 chars</td></tr>
+      <tr><td class="mono">char *s3</td><td>points into read-only memory</td><td><b>No</b> — <code>s3[0]='h'</code> is undefined behaviour</td></tr>
+    </table>
+    <div class="note red"><b>The read-only-literal trap.</b> <code>char *s3 = "Hello";</code> makes <code>s3</code> point at a constant string literal that the compiler placed in read-only memory. Writing through it — <code>s3[0] = 'h';</code> — is <strong>undefined behaviour</strong>, and on most modern systems an immediate crash (<code>SIGSEGV</code>). When you need to modify a string, always use <code>char s1[]</code> or <code>char s2[N]</code>.</div>
+    <div class="prose">
+      <p>If you build a string one character at a time, <strong>you</strong> are responsible for the terminator — without it, the array is just characters, not a string:</p>
+    </div>
+<pre class="calc">
+char name[6];
+name[0] = 'A'; name[1] = 'n'; name[2] = 'd'; name[3] = 'y';
+name[4] = '\0';   <span class="r">// REQUIRED - otherwise it is not a string</span>
+</pre>
+    <div class="note amber"><b>Forgetting <code>'\0'</code> is one of the most common C bugs.</b> Every string function reads until it finds the terminator. Leave it out and the function marches straight past your data into whatever bytes happen to follow — printing garbage or crashing.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§3 · Reading Strings from the User</h2>
+    <p class="lead">Reading text is where beginners first meet the buffer overflow. Two tools do the job — <code>scanf</code> for a single word, <code>fgets</code> for a whole line — and only one of them is safe by default.</p>
+    <div class="prose">
+      <p><strong><code>scanf("%s", name)</code></strong> reads one word, stopping at the first whitespace. No <code>&amp;</code> is needed — the array name already decays to a pointer (Lecture 6). But by itself it has <strong>no length limit</strong>: type more characters than the array holds and <code>scanf</code> writes past the end — a buffer overflow. The fix is a width in the format string:</p>
+    </div>
+<pre class="calc">
+char name[50];
+scanf("%s", name);      <span class="r">// DANGER: no limit - long input overflows name</span>
+scanf("%49s", name);    <span class="g">// SAFE: at most 49 chars + '\0' = 50 (the array size)</span>
+</pre>
+    <div class="prose">
+      <p><strong><code>fgets</code></strong> is the safe choice. It reads at most <code>sizeof(name) - 1</code> characters, always null-terminates, and reads a whole line <em>including spaces</em>. It also captures the trailing newline, which you strip with <code>strcspn</code>:</p>
+    </div>
+<pre class="calc">
+char name[50];
+fgets(name, sizeof(name), stdin);   <span class="g">// length-limited, always terminates</span>
+name[strcspn(name, "\n")] = '\0';   <span class="g">// strcspn finds the '\n' index; overwrite it</span>
+</pre>
+    <table class="spec">
+      <tr><th></th><th><code>scanf("%s")</code></th><th><code>fgets</code></th></tr>
+      <tr><td>Stops at</td><td>whitespace</td><td>newline or length limit</td></tr>
+      <tr><td>Reads spaces?</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Buffer safe?</td><td>Only with a width limit</td><td>Always</td></tr>
+    </table>
+    <div class="note red"><b>Never use <code>gets</code>.</b> It has no length limit whatsoever and was <em>removed from the language</em> in C11. <code>fgets</code> is its safe replacement — there is no situation where <code>gets</code> is the right call.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§4 · Standard String Functions</h2>
+    <p class="lead">The workhorses live in <code>&lt;string.h&gt;</code>. Each walks a string until it hits <code>'\0'</code> — which is exactly why every one of them can overflow if the destination is too small. Learn the function <em>and</em> its safe sibling together.</p>
+    <div class="prose">
+      <p><strong><code>strlen</code></strong> returns the character count, excluding the terminator. It is undefined behaviour on an array that has no <code>'\0'</code>:</p>
+    </div>
+<pre class="calc">
+size_t strlen(const char *s);
+strlen("Hello")   <span class="g">// 5</span>
+strlen("")        <span class="g">// 0 - the first byte is already '\0'</span>
+</pre>
+    <div class="prose">
+      <p><strong><code>strcpy</code> / <code>strncpy</code></strong> copy <code>src</code> into <code>dest</code>, terminator included. <code>strcpy</code> checks nothing; the bounded <code>strncpy</code> is safer but has a sharp edge — it may <em>not</em> null-terminate, so you must do it yourself:</p>
+    </div>
+<pre class="calc">
+char dest[10];
+strcpy(dest, "Hello");                <span class="g">// fine here; OVERFLOW if dest too small</span>
+strncpy(dest, src, sizeof(dest) - 1); <span class="g">// bounded copy...</span>
+dest[sizeof(dest) - 1] = '\0';        <span class="r">// ...strncpy may NOT terminate - do it yourself</span>
+</pre>
+    <div class="prose">
+      <p><strong><code>strcat</code> / <code>strncat</code></strong> append <code>src</code> to the end of <code>dest</code>. <code>dest</code> must already be a valid string with room for both:</p>
+    </div>
+<pre class="calc">
+char result[20] = "Hello";
+strcat(result, ", world!");                          <span class="g">// "Hello, world!"</span>
+strncat(dest, src, sizeof(dest) - strlen(dest) - 1); <span class="g">// bounded append</span>
+</pre>
+    <div class="prose">
+      <p><strong><code>strcmp</code></strong> compares two strings and returns <code>0</code> when they are <em>equal</em> — a return value that trips up nearly everyone:</p>
+    </div>
+    <table class="spec">
+      <tr><th>Return</th><th>Meaning</th></tr>
+      <tr><td class="mono">0</td><td>strings are <b>equal</b></td></tr>
+      <tr><td class="mono">&lt; 0</td><td><code>s1</code> comes before <code>s2</code> alphabetically</td></tr>
+      <tr><td class="mono">&gt; 0</td><td><code>s1</code> comes after <code>s2</code></td></tr>
+    </table>
+    <div class="note red"><b>Two classic mistakes.</b> (1) <code>if (strcmp(a, b))</code> is true when the strings are <strong>NOT</strong> equal (non-zero) — always write <code>if (strcmp(a, b) == 0)</code> for equality. (2) <code>if (a == b)</code> compares the two <em>addresses</em>, never the characters — it is always the wrong way to compare string content.</div>
+    <div class="prose">
+      <p>Two search helpers round out the toolkit — each returns a pointer to the match, or <code>NULL</code>:</p>
+    </div>
+<pre class="calc">
+strchr(s, 'e')      <span class="g">// pointer to the first 'e' in s, else NULL</span>
+strstr(s, "ell")    <span class="g">// pointer to the first "ell" substring, else NULL</span>
+</pre>
+  </section>
+
+  <section class="chapter">
+    <h2>§5 · Buffer Overflow and Safe Practices</h2>
+    <p class="lead">A <strong>buffer overflow</strong> is what happens when you write more bytes into an array than it can hold. The excess spills into <em>adjacent</em> memory — corrupting other variables, crashing the program, or opening a security hole. It is the number-one cause of vulnerabilities in C code.</p>
+    <div class="prose">
+      <p>Picture two variables next to each other on the stack — an 8-byte buffer and, right after it, an <code>int</code>. Copying an over-long string into the buffer runs off its end and rewrites the neighbour:</p>
+    </div>
+<pre class="calc">
+char name[8];
+int  secret = 42;                    <span class="g">// lives right after name on the stack</span>
+strcpy(name, "AAAAAAAAAAAA");        <span class="r">// 12 A's + '\0' - runs past name[7]</span>
+<span class="g">// secret is now overwritten with 'A' bytes - it is no longer 42</span>
+</pre>
+
+    <div class="demo" id="d-ovf">
+      <div class="dhead"><span class="dot"></span><h4>Stack corruption — <code>strcpy</code> overrunning a buffer</h4><span class="tag">animated</span></div>
+      <div class="stage" id="ovf-stage"></div>
+      <div class="caption" id="ovf-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="ovf-play" onclick="OVF.play()">▶ Play</button>
+        <button class="ctrl" id="ovf-step" onclick="OVF.step()">⏭ Step</button>
+        <button class="ctrl" onclick="OVF.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      The copy fills <code>name[0]</code> through <code>name[7]</code> normally — but it does <strong>not stop there</strong>, because <code>strcpy</code> has no idea how big <code>name</code> is. It keeps writing, and the next bytes it touches belong to <code>secret</code>. Watch the blue <code>secret</code> cell turn red and its value change from <strong>42</strong> to garbage: nothing warned the program, nothing crashed at the moment of the write. That silent corruption of a <em>different</em> variable is exactly why buffer overflows are so dangerous — and why the bounded functions below exist.
+    </div>
+
+    <div class="note green"><b>Safe string programming checklist:</b>
+      <ol style="margin:.4em 0 .1em;padding-inline-start:1.3em">
+        <li>Always allocate <code>strlen + 1</code> bytes — one extra for <code>'\0'</code>.</li>
+        <li>Use <code>fgets</code>, never <code>gets</code> (or <code>scanf</code> with a width limit).</li>
+        <li>Use <code>strncpy</code> / <code>strncat</code> instead of <code>strcpy</code> / <code>strcat</code>.</li>
+        <li>After <code>strncpy</code>, null-terminate manually — it does not guarantee it.</li>
+        <li>Build formatted strings with <code>snprintf</code>, never <code>sprintf</code>.</li>
+      </ol>
+    </div>
+<pre class="calc">
+char buf[50];
+snprintf(buf, sizeof(buf), "Name: %s, Age: %d", name, age);  <span class="g">// respects the size limit</span>
+</pre>
+  </section>
+
+  <section class="chapter">
+    <h2>§6 · <code>std::string</code> in C++</h2>
+    <p class="lead">C++ offers a better default: <code>std::string</code> manages its own memory. It grows as needed, tracks its own length, and has no null terminator for you to lose and no buffer to overflow.</p>
+    <div class="prose">
+      <p>The same operations that took manual care in C become one-liners:</p>
+    </div>
+<pre class="calc">
+#include &lt;string&gt;
+using namespace std;
+
+string s = "Hello";
+s += ", world!";              <span class="g">// concatenation - grows automatically</span>
+cout &lt;&lt; s &lt;&lt; "\n";            <span class="g">// Hello, world!</span>
+cout &lt;&lt; s.length() &lt;&lt; "\n";   <span class="g">// 13  (same as s.size())</span>
+</pre>
+    <table class="spec">
+      <tr><th>Operation</th><th>What it does</th></tr>
+      <tr><td class="mono">s.length() / s.size()</td><td>number of characters</td></tr>
+      <tr><td class="mono">s.empty()</td><td><code>true</code> if length is 0</td></tr>
+      <tr><td class="mono">s.substr(0, 5)</td><td><code>"Hello"</code> — the first 5 characters</td></tr>
+      <tr><td class="mono">s.find("world")</td><td>index of the match, or <code>string::npos</code></td></tr>
+      <tr><td class="mono">s.c_str()</td><td>a <code>const char*</code> for C APIs (<code>printf</code>, <code>strcmp</code>)</td></tr>
+    </table>
+    <div class="note"><b>When to use which.</b> Reach for C strings when interfacing with C libraries, on embedded / memory-constrained targets, or with fixed-length buffers. Reach for <code>std::string</code> for essentially all new C++ text handling — it is safer and shorter. Bridge the two with <code>s.c_str()</code> whenever a C function needs a <code>const char*</code>.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>Chapter summary</h2>
+    <div class="twocol">
+      <div class="card">
+        <h5>🎬 You just covered</h5>
+        <p><strong>The null terminator</strong> — a C string is a <code>char</code> array ending in <code>'\0'</code>; <code>sizeof</code> counts it, <code>strlen</code> does not · <strong>Initialization</strong> — <code>char s[]</code> / <code>char s[N]</code> are modifiable, <code>char *s = "..."</code> points to read-only memory (the literal trap) · <strong>Reading</strong> — <code>fgets</code> for whole lines (safe) + <code>strcspn</code> to strip the newline, <code>scanf("%49s")</code> for words with a width limit, never <code>gets</code> · <strong>Functions</strong> — <code>strlen</code>, <code>strcpy</code>/<code>strncpy</code>, <code>strcat</code>/<code>strncat</code>, <code>strcmp</code> (0 = equal!), <code>strchr</code>, <code>strstr</code> · <strong>Buffer overflow</strong> — writing past an array corrupts neighbours; follow the 5-point safe-practice checklist · <strong><code>std::string</code></strong> — automatic memory, no terminator, no overflow; <code>.c_str()</code> for C interop.</p>
+      </div>
+      <div class="card">
+        <h5>📄 Text reference</h5>
+        <p>The full written handout (same content, no animation) is the printable study copy: <span class="mono">L07-student-handout.md</span>, also as PDF.</p>
+      </div>
+    </div>
+
+    <div class="chapnav">
+      <a href="lecture-06.html"><span class="dir">Previous</span><div class="lb">← Lecture 6</div></a>
+      <a href="index.html"><span class="dir">Contents</span><div class="lb">All lectures</div></a>
+      <a href="#" class="disabled"><span class="dir">Next</span><div class="lb">Coming soon</div></a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  First-Year Programming · Lecture 7 — Strings<br>
+  © 2026 Dr. Ali Mahmoud Mansour · All rights reserved. Content &amp; concept: Dr. Ali Mahmoud Mansour · Co-created with Claude (Anthropic).
+  <span aria-hidden="true">⁠​‌​​‌‌‌‌​‌​‌​‌‌‌​‌​​‌‌‌​​‌​​​‌​‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​​‌​‌​​‌‌​​​‌​​‌​​‌​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌​​​​‌​​‌‌​‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​​​‌​​​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌‌‌​​‌​‌​​‌‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​‌​​‌​​​‌‌‌​‌‌​‌​​​​‌‌​‌​​‌‌‌‌​​‌​‌‌​‌​‌​​​​‌‌​‌​‌​​‌​​‌​​​‌​‌​‌​​​​​‌​‌​‌​‌​​​‌​​‌‌‌‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​‌‌​‌​​‌‌​​​‌​​​​​‌​‌​‌​‌​‌​‌​​​‌​​​‌​​​‌​‌​​‌‌‌​‌‌​‌​‌‌​​‌​‌​​​‌​‌​‌​​​​​‌​‌​‌​​‌​​​‌‌‌‌​‌​​‌‌​​‌​​​‌‌​​​​​​‌‌​​‌​​​‌‌​‌‌​⁠</span>
+</footer>
+
+<script>
+/* ============================================================
+   DEMO 1 — Null terminator: sizeof vs strlen  (STR)
+   char greeting[] = "Hello"; 6 bytes: H e l l o \0.
+   Phase A: strlen walks and counts characters, stops at '\0'.
+   Phase B: sizeof reports every allocated byte (6).
+   ============================================================ */
+const STR = (function() {
+  var stage = document.getElementById('str-stage');
+  var cap   = document.getElementById('str-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var CH  = ['H', 'e', 'l', 'l', 'o', '\\0'];
+  var ASC = [72, 101, 108, 108, 111, 0];
+
+  // Build the step list.
+  var STEPS = [];
+  STEPS.push({phase: 'intro', hot: -1, count: 0,
+    msg: "char greeting[] = \"Hello\";  6 bytes reserved, terminator included."});
+  // strlen walk: count each real character, stop at '\0'.
+  for (var v = 0; v < 5; v++) {
+    STEPS.push({phase: 'strlen', hot: v, count: v + 1,
+      msg: "strlen reads greeting[" + v + "] = '" + CH[v] + "' - a real character, count = " + (v + 1) + "."});
+  }
+  STEPS.push({phase: 'stop', hot: 5, count: 5,
+    msg: "strlen hits greeting[5] = '\\0' - STOP. It does NOT count the terminator. strlen = 5."});
+  STEPS.push({phase: 'sizeof', hot: -1, count: 5,
+    msg: "sizeof(greeting) = 6: every allocated byte, the '\\0' included. sizeof(6) - strlen(5) = 1."});
+
+  function build() {
+    var html = '<div class="strbox">' +
+      '<div class="strhdr">char greeting[] = "Hello";   <b>sizeof = 6</b>,  <b>strlen = ?</b></div>' +
+      '<div class="strrow">';
+    for (var i = 0; i < CH.length; i++) {
+      var cls = (i === 5) ? 'ccell nul' : 'ccell';
+      html += '<div class="' + cls + '" id="ccell' + i + '">' +
+                '<div class="cv">' + CH[i] + '</div>' +
+                '<div class="ca">' + ASC[i] + '</div>' +
+                '<div class="ci">[' + i + ']</div>' +
+              '</div>';
+    }
+    html += '</div>' +
+      '<div class="streq" id="str-eq">strlen counts characters up to \'\\0\'; sizeof counts every byte.</div>' +
+      '</div>';
+    stage.innerHTML = html;
+  }
+
+  function applyStep(s) {
+    for (var i = 0; i < CH.length; i++) {
+      var el = document.getElementById('ccell' + i);
+      if (!el) { continue; }
+      var base = (i === 5) ? 'ccell nul' : 'ccell';
+      // green = already counted by strlen
+      if ((s.phase === 'strlen' || s.phase === 'stop' || s.phase === 'sizeof') && i < 5 && i < s.count) {
+        base += ' counted';
+      }
+      if (i === s.hot) { base += ' hot'; }
+      el.className = base;
+    }
+    var eq = document.getElementById('str-eq');
+    if (eq) {
+      if (s.phase === 'sizeof') {
+        eq.innerHTML = '<b>strlen = 5</b>   ·   <b>sizeof = 6</b>   ·   the difference is the <span class="amb">\'\\0\'</span> terminator.';
+      } else if (s.phase === 'stop') {
+        eq.innerHTML = 'Reached the <span class="amb">\'\\0\'</span> - strlen stops at <b>5</b> (terminator not counted).';
+      } else if (s.phase === 'strlen') {
+        eq.innerHTML = 'strlen so far = <b>' + s.count + '</b>';
+      } else {
+        eq.innerHTML = 'strlen counts characters up to \'\\0\'; sizeof counts every byte.';
+      }
+    }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('str-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('str-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 1100);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to watch strlen walk to the terminator.';
+    var btn = document.getElementById('str-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+
+/* ============================================================
+   DEMO 2 — Buffer overflow: strcpy overrunning name[8]  (OVF)
+   char name[8]; int secret = 42; adjacent on the stack.
+   strcpy(name, "AAAAAAAAAAAA") writes 12 A's past name[7]
+   into secret, corrupting it.
+   ============================================================ */
+const OVF = (function() {
+  var stage = document.getElementById('ovf-stage');
+  var cap   = document.getElementById('ovf-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var NAME_LEN = 8;      // name[8]
+  var SECRET_CELLS = 4;  // 4 bytes of the int `secret`
+  var TOTAL = NAME_LEN + SECRET_CELLS;
+  var SRC = "AAAAAAAAAAAA";   // 12 A's -> overflows name[8]
+
+  // Step list: one write per source character, then the reveal.
+  var STEPS = [];
+  STEPS.push({idx: -1, msg: "char name[8]; int secret = 42;  strcpy(name, \"AAAAAAAAAAAA\") begins."});
+  for (var i = 0; i < SRC.length; i++) {
+    var over = (i >= NAME_LEN);
+    STEPS.push({
+      idx: i,
+      over: over,
+      msg: over
+        ? "Writing 'A' to byte " + i + " - PAST name[7]! This byte belongs to secret."
+        : "Writing 'A' to name[" + i + "] - still inside the 8-byte buffer."
+    });
+  }
+  STEPS.push({idx: 99, msg: "Done. secret was overwritten with 'A' bytes - it is no longer 42. No crash, no warning."});
+
+  function build() {
+    var html = '<div class="stackbox">' +
+      '<div class="stacklbl">the stack: name[8] followed by int secret</div>' +
+      '<div class="stackrow">';
+    for (var i = 0; i < TOTAL; i++) {
+      var region = (i < NAME_LEN) ? 'name' : 'secret';
+      var label = (i < NAME_LEN) ? ('n[' + i + ']') : 'secret';
+      var val = (i < NAME_LEN) ? '·' : (i === NAME_LEN ? '42' : '·');
+      html += '<div class="scell ' + region + '" id="scell' + i + '">' +
+                '<div class="sv" id="sval' + i + '">' + val + '</div>' +
+                '<div class="si">' + label + '</div>' +
+              '</div>';
+    }
+    html += '</div>' +
+      '<div class="stackeq" id="ovf-eq">secret = <b>42</b> (intact)</div>' +
+      '</div>';
+    stage.innerHTML = html;
+  }
+
+  function applyStep(s) {
+    var i;
+    // Reset hot state on all cells.
+    for (i = 0; i < TOTAL; i++) {
+      var el = document.getElementById('scell' + i);
+      if (el) { el.classList.remove('hot'); }
+    }
+    if (s.idx >= 0 && s.idx < SRC.length) {
+      // Write 'A' into cell s.idx.
+      var cell = document.getElementById('scell' + s.idx);
+      var valEl = document.getElementById('sval' + s.idx);
+      if (valEl) { valEl.textContent = 'A'; }
+      if (cell) {
+        cell.classList.add('hot');
+        if (s.over) { cell.classList.add('overflow'); }
+      }
+    }
+    var eq = document.getElementById('ovf-eq');
+    if (eq) {
+      if (s.idx === 99) {
+        eq.innerHTML = 'secret = <b>corrupted</b> ("AAAA" bytes, no longer 42) - silent overflow.';
+      } else if (s.idx >= NAME_LEN && s.idx < SRC.length) {
+        eq.innerHTML = 'byte ' + s.idx + ' <b>overwrites secret</b> - out of bounds!';
+      } else if (s.idx >= 0) {
+        eq.innerHTML = 'writing inside name[8] - <span class="ok">safe so far</span>';
+      } else {
+        eq.innerHTML = 'secret = <b>42</b> (intact)';
+      }
+    }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('ovf-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('ovf-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 850);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to watch the copy run off the end of name[8].';
+    var btn = document.getElementById('ovf-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+</script>
+</body>
+</html>

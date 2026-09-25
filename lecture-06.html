@@ -1,0 +1,577 @@
+<!doctype html>
+<!--
+  interactive-book · CHAPTER — Lecture 6: Arrays and Pointers (lecture-06.html)
+  Origin: chunk C01 of the chunked run (serial 039) for activity
+    [[260816-001-activity]] ("programming"). Built from _chapter-template.html,
+    content sourced from L06-student-handout.md + L06-instructor-guide.md;
+    styles/watermark/footer signature mirror lecture-05.html.
+    Satisfies interactive-book-build-standard §1 (self-contained) · §2 (≥2 .demo
+    animations) · §3 (.watch boxes) · §4 (node --check) · §6 (instructor block) ·
+    §7 (3-layer ownership watermark). Version: v0.1 · 2026-09-22.
+-->
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arrays and Pointers — Interactive Book</title>
+<!-- ===== ownership watermark · Layer 2 (build standard §7) — schema.org CreativeWork.
+     Scheme + detection method: [[260831-001-copyright-watermark-note]]. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Arrays and Pointers",
+  "inLanguage": "en",
+  "copyrightYear": 2026,
+  "copyrightHolder": { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "creator":         { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour", "url": "https://sfedu.ru/s7/person/ru/mansur" },
+  "author":          { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "contributor":     { "@type": "Person", "name": "Claude (Anthropic)" },
+  "publisher":       { "@type": "Person", "name": "Dr. Ali Mahmoud Mansour" },
+  "copyrightNotice": "© 2026 Dr. Ali Mahmoud Mansour. All rights reserved.",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creditText": "Content and concept by Dr. Ali Mahmoud Mansour; co-created with Claude (Anthropic).",
+  "identifier": "OWNER=ALI-MAHMOUD-MANSOUR;CO-CREATOR=CLAUDE;YEAR=2026"
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2; --panel:#ffffff; --ink:#1d2430; --muted:#5c6675;
+    --line:#e7e0d6; --accent:#1f6f6b; --accent-soft:#dcefec;
+    --blue:#2f6db3; --blue-soft:#e3eef9; --green:#2f8f5b; --green-soft:#e2f2e9;
+    --amber:#b8890f; --amber-soft:#f7edcf;
+    --shadow:0 10px 30px rgba(40,30,20,.08), 0 2px 6px rgba(40,30,20,.05);
+    --radius:16px;
+    --serif:"Iowan Old Style",Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Fira Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181d; --panel:#1e232b; --ink:#eef1f5; --muted:#9aa4b2;
+      --line:#2c333d; --accent:#4fb3ab; --accent-soft:#16302e;
+      --blue:#69a6e6; --blue-soft:#1c2a3a; --green:#6fce97; --green-soft:#172a20;
+      --amber:#d8ab3a; --amber-soft:#2c2411;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;margin:0}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 90px}
+  header.mast{
+    background:linear-gradient(135deg,var(--accent) 0%,#145048 100%);
+    color:#fff;padding:46px 22px 40px;text-align:center;position:relative;overflow:hidden}
+  header.mast::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 20% 120%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+  .mast .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:.68rem;opacity:.8;font-weight:600}
+  .mast h1{font-family:var(--serif);font-size:clamp(1.5rem,4.5vw,2.4rem);margin:.1em 0 .15em;font-weight:600;letter-spacing:-.01em}
+  .mast .sub{opacity:.92;font-size:1rem;max-width:640px;margin:.2em auto 0}
+  .instructor{position:relative;z-index:1;max-width:560px;margin:20px auto 0;padding:13px 18px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:12px;
+    backdrop-filter:blur(3px);display:flex;flex-direction:column;gap:3px;align-items:center}
+  .instructor .iname{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:#fff}
+  .instructor .ispec{font-size:.85rem;opacity:.92}
+  .instructor .ipage{font-size:.85rem;color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .instructor .ipage:hover{opacity:.85}
+  .langbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 0}
+  .langbar .inner{max-width:820px;margin:0 auto;padding:0 22px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .langbar .home{font-size:.82rem;color:var(--muted);font-weight:600;text-decoration:none}
+  .langbar .home:hover{color:var(--accent)}
+  section.chapter{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:34px clamp(20px,4vw,44px);margin-top:26px}
+  .chapter > h2{font-family:var(--serif);font-size:1.5rem;margin:.1em 0 .1em;font-weight:600}
+  .chapter > .lead{color:var(--muted);margin:.2em 0 1.4em;font-size:1.02rem}
+  p{margin:.9em 0}
+  .prose{font-family:var(--serif);font-size:1.08rem}
+  .mono{font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);border-radius:4px;padding:1px 5px}
+  .demo{border:1px solid var(--line);border-radius:14px;margin:22px 0;overflow:hidden;background:var(--bg)}
+  .demo .dhead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .demo .dhead .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+  .demo .dhead h4{margin:0;font-size:.92rem;font-weight:700;letter-spacing:.01em}
+  .demo .dhead .tag{margin-inline-start:auto;font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .demo .stage{padding:22px 16px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .demo .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 16px 16px}
+  button.ctrl{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:600;
+    font-size:.84rem;padding:7px 14px;border-radius:10px;cursor:pointer;transition:.15s;display:inline-flex;gap:6px;align-items:center}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+  button.ctrl.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.ctrl.primary:hover{filter:brightness(1.05);color:#fff}
+  button.ctrl:disabled{opacity:.4;cursor:default;border-color:var(--line);color:var(--muted)}
+  .caption{font-size:.9rem;color:var(--muted);min-height:1.4em;text-align:center;transition:.2s;padding:0 16px 8px}
+  .note{background:var(--blue-soft);border-inline-start:4px solid var(--blue);border-radius:10px;
+    padding:12px 16px;margin:20px 0;font-size:.94rem}
+  .note b{color:var(--blue)}
+  .note.green{background:var(--green-soft);border-color:var(--green)}
+  .note.green b{color:var(--green)}
+  .note.amber{background:var(--amber-soft);border-color:var(--amber)}
+  .note.amber b{color:var(--amber)}
+  .watch{background:var(--amber-soft);border-inline-start:4px solid var(--amber);border-radius:10px;
+    padding:13px 17px;margin:6px 0 2px;font-size:.95rem}
+  .watch .wh{font-weight:700;color:var(--amber);display:block;margin-bottom:3px}
+  pre.calc{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow-x:auto;font-size:.9rem;line-height:1.75;margin:16px 0;white-space:pre}
+  pre.calc b{color:var(--accent)}
+  pre.calc .g{color:var(--muted)}
+  pre.calc .r{color:var(--accent);font-weight:700}
+  table.spec{width:100%;border-collapse:collapse;margin:16px 0;font-size:.92rem}
+  table.spec th,table.spec td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  table.spec th{background:var(--accent-soft);font-weight:700}
+  table.spec td.mono,table.spec td code{font-family:var(--mono)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.twocol{grid-template-columns:1fr}}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h5{margin:.1em 0 .5em;font-size:.98rem}
+  .card p{margin:.3em 0;font-size:.9rem;color:var(--muted)}
+  .chapnav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .chapnav a{flex:1;min-width:180px;text-decoration:none;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;color:inherit;transition:.15s}
+  .chapnav a:hover{border-color:var(--accent)}
+  .chapnav .dir{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .chapnav .lb{font-weight:600;color:var(--accent);margin-top:2px}
+  .chapnav a.disabled{opacity:.5;pointer-events:none}
+  footer{max-width:820px;margin:34px auto 0;padding:0 22px;color:var(--muted);font-size:.85rem;text-align:center}
+
+  /* ---- demo-specific styles ---- */
+  /* array contiguous-memory row */
+  .arrbox{display:flex;flex-direction:column;gap:18px;width:100%;max-width:560px;align-items:center}
+  .arrhdr{font-family:var(--mono);font-size:.95rem;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center}
+  .arrhdr b{color:var(--accent)}
+  .arrrow{display:flex;gap:0}
+  .acell{width:66px;display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--line);
+    border-inline-start-width:.75px;border-inline-end-width:.75px;background:var(--panel);transition:.3s}
+  .arrrow .acell:first-child{border-inline-start-width:1.5px;border-top-left-radius:8px;border-bottom-left-radius:8px}
+  .arrrow .acell:last-child{border-inline-end-width:1.5px;border-top-right-radius:8px;border-bottom-right-radius:8px}
+  .acell.hot{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-6px);
+    box-shadow:0 6px 14px rgba(31,111,107,.25)}
+  .acell .av{font-family:var(--mono);font-size:1.15rem;font-weight:700;padding:10px 0 6px}
+  .acell .ai{font-family:var(--mono);font-size:.68rem;color:var(--muted);padding-bottom:3px}
+  .acell .aa{font-family:var(--mono);font-size:.62rem;color:var(--blue);border-top:1px dashed var(--line);
+    width:100%;text-align:center;padding:3px 0}
+  .acell.hot .aa{color:var(--accent);font-weight:700}
+  /* pointer arithmetic row */
+  .ptrbox{display:flex;flex-direction:column;gap:6px;width:100%;max-width:560px;align-items:center}
+  .ptrrow{display:flex;gap:0;position:relative}
+  .pcell{width:70px;height:52px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);
+    border-inline-start-width:.75px;border-inline-end-width:.75px;background:var(--panel);
+    font-family:var(--mono);font-size:1.15rem;font-weight:700;transition:.3s}
+  .ptrrow .pcell:first-child{border-inline-start-width:1.5px;border-top-left-radius:8px;border-bottom-left-radius:8px}
+  .ptrrow .pcell:last-child{border-inline-end-width:1.5px;border-top-right-radius:8px;border-bottom-right-radius:8px}
+  .pcell.hot{border-color:var(--accent);background:var(--accent-soft)}
+  .pidxrow{display:flex;gap:0}
+  .pidx{width:70px;text-align:center;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+  .parrow{width:70px;text-align:center;font-size:1.1rem;color:var(--accent);height:1.4em;transition:.3s}
+  .peq{font-family:var(--mono);font-size:1rem;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:8px 14px;color:var(--ink);min-height:1.7em}
+  .peq b{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="kicker">First-Year Programming · Lecture 6</div>
+  <h1>Arrays and Pointers</h1>
+  <div class="sub">Storing many values under one name, 0-based indexing and the off-by-one trap, the sizeof trick, the address-of and dereference operators, pointer arithmetic, array decay in functions, and 2D row-major storage</div>
+  <div class="instructor">
+    <span class="iname">Dr. Ali Mahmoud Mansour</span>
+    <span class="ispec">PhD in Artificial Intelligence and Machine Learning</span>
+    <a class="ipage" href="https://sfedu.ru/s7/person/ru/mansur" target="_blank" rel="noopener">Personal page</a>
+  </div>
+</header>
+
+<div class="langbar">
+  <div class="inner">
+    <a class="home" href="index.html">← Contents</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="chapter">
+    <h2>§1 · Why Arrays? Contiguous Memory</h2>
+    <p class="lead">A single variable holds one value. An <strong>array</strong> holds many values of the <em>same type</em> under one name, laid out contiguously in memory — which is the fact everything else in this chapter follows from.</p>
+    <div class="prose">
+      <p>When you write <code>int scores[30];</code> the compiler reserves 30 <code>int</code>-sized slots back to back, with <strong>no gaps</strong>. <code>scores[0]</code> sits at the array's base address; <code>scores[1]</code> is exactly <code>sizeof(int)</code> — 4 bytes on a typical machine — further along, and so on. That regular spacing is what makes an index a <em>fast</em> operation: the machine computes one address, it does not search.</p>
+      <p>Declaring an array is just naming the type, the identifier, and the count:</p>
+    </div>
+<pre class="calc">
+int    scores[30];   <span class="g">// 30 integers, 30 * 4 = 120 bytes</span>
+double temps[7];     <span class="g">// 7 doubles</span>
+char   letters[26];  <span class="g">// 26 characters</span>
+</pre>
+    <div class="prose">
+      <p>The size must be a <strong>compile-time constant</strong> in standard C — use <code>#define N 30</code> so the same name drives the declaration and every loop over it. Initialization can be full, partial (the rest is zeroed for you), or size-inferred:</p>
+    </div>
+<pre class="calc">
+int primes[5] = {2, 3, 5, 7, 11};   <span class="g">// fully initialized</span>
+int zeros[100] = {0};                <span class="g">// all 100 elements -> 0</span>
+int partial[5] = {1, 2};             <span class="g">// = {1, 2, 0, 0, 0}</span>
+int auto_size[] = {10, 20, 30};      <span class="g">// size inferred = 3</span>
+</pre>
+    <div class="note"><b>The mental model:</b> an array is one labelled shelf of identical boxes. The name is the shelf; the index is which box; the boxes are always the same size and always touching. Hold that picture — the demo below draws it literally.</div>
+
+    <div class="demo" id="d-arr">
+      <div class="dhead"><span class="dot"></span><h4>Contiguous memory — how <code>arr[i]</code> becomes an address</h4><span class="tag">animated</span></div>
+      <div class="stage" id="arr-stage"></div>
+      <div class="caption" id="arr-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="arr-play" onclick="ARR.play()">▶ Play</button>
+        <button class="ctrl" id="arr-step" onclick="ARR.step()">⏭ Step</button>
+        <button class="ctrl" onclick="ARR.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      Watch the address under each box, not just the value. The first element lives at the <em>base address</em> (here <code>0x1000</code>); every next element is exactly <code>sizeof(int)</code> = 4 bytes further along, with nothing in between. That is why the machine can jump straight to any element with one multiply-and-add — <code>address = base + i × 4</code> — instead of walking the array. It is also why the index starts at <strong>0</strong>: element <code>i</code> is <em>i steps</em> from the base, and the base itself is 0 steps away.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§2 · Indexing, the <code>sizeof</code> Trick, and the Off-by-One Trap</h2>
+    <p class="lead">Indices run from <code>0</code> to <code>N−1</code>. Step outside that range and C does not stop you — it is <strong>undefined behavior</strong>: the program may crash, print garbage, or silently corrupt other data. There are no runtime bounds checks.</p>
+    <div class="prose">
+      <p>Reading and writing elements is direct, and the last valid index is always one less than the count:</p>
+    </div>
+<pre class="calc">
+int arr[5] = {10, 20, 30, 40, 50};
+printf("%d\n", arr[0]);   <span class="g">// 10 - first element</span>
+printf("%d\n", arr[4]);   <span class="g">// 50 - LAST element (index 4, not 5)</span>
+arr[2] = 99;              <span class="g">// modify the third element</span>
+</pre>
+    <div class="prose">
+      <p>You can recover the element count from the declaration with the <strong><code>sizeof</code> trick</strong> — total bytes divided by one element's bytes:</p>
+    </div>
+<pre class="calc">
+int n = sizeof(arr) / sizeof(arr[0]);   <span class="g">// = 20 / 4 = 5</span>
+</pre>
+    <div class="note amber"><b>The trick only works on the real array.</b> Once the array is passed to a function it <em>decays to a pointer</em> (§4), and <code>sizeof</code> then returns the pointer's size (8 bytes), not the array's — giving the wrong <code>n</code>. Use the trick only in the scope where the array was declared.</div>
+    <div class="prose">
+      <p>The single most common C bug lives in the loop bound — one wrong character reads past the end:</p>
+    </div>
+<pre class="calc">
+for (int i = 0; i <span class="r">&lt;=</span> n; i++) { ... }   <span class="g">// BUG: touches arr[n] - out of bounds</span>
+for (int i = 0; i <span class="r">&lt;</span>  n; i++) { ... }   <span class="g">// correct: last index is n-1</span>
+</pre>
+
+    <div class="note green"><b>One question fixes it every time:</b> <em>what is the largest index this loop uses?</em> With <code>i &lt; n</code> the largest <code>i</code> that runs is <code>n-1</code> — the last valid element. With <code>i &lt;= n</code> it is <code>n</code> — one past the end.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§3 · Core Processing Patterns</h2>
+    <p class="lead">Almost every array program is one of three tiny loops: accumulate a total, track a running best, or scan for a target. Learn these once and you will recognise them everywhere.</p>
+    <div class="prose">
+      <p><strong>Sum and average</strong> — accumulate, then cast <em>before</em> dividing so the average is not truncated to an integer:</p>
+    </div>
+<pre class="calc">
+int sum = 0;
+for (int i = 0; i &lt; n; i++) sum += arr[i];
+double avg = (double)sum / n;   <span class="g">// cast BEFORE dividing</span>
+</pre>
+    <div class="prose">
+      <p><strong>Maximum / minimum</strong> — seed the tracker from the <em>first element</em>, never from <code>0</code>:</p>
+    </div>
+<pre class="calc">
+int max = arr[0];               <span class="g">// a REAL member of the set</span>
+for (int i = 1; i &lt; n; i++)
+    if (arr[i] &gt; max) max = arr[i];
+</pre>
+    <div class="note"><b>Why seed from <code>arr[0]</code>, not 0?</b> If every value is negative, starting <code>max = 0</code> reports 0 as the maximum — a value that is not even in the array. The first element is always a genuine candidate, so it is the safe starting guess.</div>
+    <div class="prose">
+      <p><strong>Linear search</strong> — scan left to right, return the index or <code>-1</code>:</p>
+    </div>
+<pre class="calc">
+int found = -1;
+for (int i = 0; i &lt; n; i++)
+    if (arr[i] == target) { found = i; break; }
+<span class="g">// found &gt;= 0 -> success at that index; found == -1 -> not present</span>
+</pre>
+    <div class="note green"><b>Worked example — grade statistics in one pass:</b> a single loop over <code>{85, 92, 78, 95, 88}</code> can carry <code>sum</code>, <code>max</code> and <code>min</code> together: <code>sum</code> ends at 438 (average 87.6), <code>max</code> rises to 95 at index 3, <code>min</code> drops to 78 at index 2. Three patterns, one traversal.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>§4 · Pointers, and How Arrays Decay to Them</h2>
+    <p class="lead">A <strong>pointer</strong> is a variable that stores a <em>memory address</em>. Two operators are the whole story: <code>&amp;</code> takes the address of something, and <code>*</code> follows an address to the value it points at.</p>
+    <div class="prose">
+      <p>The address-of operator <code>&amp;x</code> asks "where does <code>x</code> live?"; the dereference operator <code>*p</code> asks "what value is stored at the address in <code>p</code>?". Writing through <code>*p</code> changes the original variable:</p>
+    </div>
+<pre class="calc">
+int x = 42;
+int *p = &amp;x;         <span class="g">// p holds the ADDRESS of x</span>
+printf("%d\n", *p);  <span class="g">// *p -> the value at that address = 42</span>
+*p = 100;            <span class="g">// write THROUGH the pointer -> x becomes 100</span>
+</pre>
+    <table class="spec">
+      <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><code>&amp;x</code></td><td>address-of <code>x</code> — <em>where</em> is it?</td><td class="mono">p = &amp;x</td></tr>
+      <tr><td><code>*p</code></td><td>dereference <code>p</code> — <em>what value</em> is there?</td><td class="mono">*p = 100</td></tr>
+    </table>
+    <div class="prose">
+      <p>An array name, used in an expression, <strong>decays</strong> to a pointer to its first element — so <code>arr</code> and <code>&amp;arr[0]</code> are the same address. This is the bridge between arrays and pointers:</p>
+    </div>
+<pre class="calc">
+int arr[5] = {10, 20, 30, 40, 50};
+int *p = arr;         <span class="g">// arr decays to &amp;arr[0]</span>
+p[1]     == arr[1]    <span class="g">// 20 - a pointer can be indexed like an array</span>
+*(p + 2) == arr[2]    <span class="g">// 30 - pointer arithmetic reaches the same place</span>
+</pre>
+    <div class="note"><b>The identity that ties it together:</b> <code>arr[i]</code> is <em>defined</em> in C as <code>*(arr + i)</code>. The subscript is just sugar for "start at the base, step <code>i</code> elements, dereference." And <strong>pointer arithmetic is scaled</strong>: <code>p + 1</code> advances by <code>sizeof(int)</code> bytes, not one byte — the compiler multiplies by the element size automatically.</div>
+
+    <div class="demo" id="d-ptr">
+      <div class="dhead"><span class="dot"></span><h4>Pointer arithmetic — <code>*(arr + i)</code> is the same as <code>arr[i]</code></h4><span class="tag">animated</span></div>
+      <div class="stage" id="ptr-stage"></div>
+      <div class="caption" id="ptr-cap"></div>
+      <div class="controls">
+        <button class="ctrl primary" id="ptr-play" onclick="PTR.play()">▶ Play</button>
+        <button class="ctrl" id="ptr-step" onclick="PTR.step()">⏭ Step</button>
+        <button class="ctrl" onclick="PTR.reset()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="watch">
+      <span class="wh">💡 What to notice</span>
+      As <code>i</code> grows, the arrow <code>▲</code> steps one box to the right each time, and the line at the bottom shows <code>*(arr + i)</code> landing on <em>exactly</em> the same value as <code>arr[i]</code>. The pointer never jumps by one <em>byte</em> — each <code>+1</code> moves it a whole <code>int</code> forward, because pointer arithmetic is scaled by the element size. That single rule is what lets a pointer walk an array, and it is why <code>arr[i]</code> and <code>*(arr+i)</code> are two spellings of one operation.
+    </div>
+  </section>
+
+  <section class="chapter">
+    <h2>§5 · Arrays as Function Parameters, and 2D Arrays</h2>
+    <p class="lead">When you pass an array to a function it decays to a pointer — the function receives the <em>address</em> of the first element, not a copy. That has two consequences you must design around.</p>
+    <div class="prose">
+      <p>First, the function can <strong>modify the original array</strong> (there is no copy to protect it). Second, the function has <strong>lost the size</strong> — <code>sizeof</code> inside it measures the pointer, so you must pass the count <code>n</code> as a separate argument:</p>
+    </div>
+<pre class="calc">
+void print_array(int *arr, int n) {                 <span class="g">// int arr[] means the same thing</span>
+    for (int i = 0; i &lt; n; i++) printf("%d ", arr[i]);
+    printf("\n");
+}
+void scale_array(int *arr, int n, int factor) {
+    for (int i = 0; i &lt; n; i++) arr[i] *= factor;   <span class="g">// modifies the CALLER's array</span>
+}
+<span class="g">// in main: n = sizeof(nums)/sizeof(nums[0]) works HERE, before decay</span>
+</pre>
+    <div class="note amber"><b>Two rules for array parameters:</b> (1) always pass <code>n</code> alongside the array — <code>sizeof</code> cannot recover it after decay. (2) If the function must <em>not</em> change the array, mark the parameter <code>const int *arr</code> so the compiler enforces read-only.</div>
+    <div class="prose">
+      <p>A <strong>two-dimensional array</strong> is a grid, and it is stored in <strong>row-major</strong> order — the whole first row, then the whole second row, contiguously in memory:</p>
+    </div>
+<pre class="calc">
+int m[2][3] = {{1, 2, 3},
+               {4, 5, 6}};
+printf("%d\n", m[1][2]);   <span class="g">// 6 - row 1, column 2</span>
+<span class="g">// memory order: m[0][0] m[0][1] m[0][2] m[1][0] m[1][1] m[1][2]</span>
+for (int r = 0; r &lt; 2; r++)
+    for (int c = 0; c &lt; 3; c++)
+        printf("%3d ", m[r][c]);   <span class="g">// row by row</span>
+</pre>
+    <div class="note green"><b>Row-major, in one sentence:</b> the <em>last</em> index changes fastest. Walking <code>m[r][c]</code> with <code>c</code> in the inner loop visits memory in the exact order it is laid out — which is the cache-friendly way to traverse a grid.</div>
+  </section>
+
+  <section class="chapter">
+    <h2>Chapter summary</h2>
+    <div class="twocol">
+      <div class="card">
+        <h5>🎬 You just covered</h5>
+        <p><strong>Arrays</strong> — many same-type values under one name, stored contiguously; declare with a compile-time size, initialise fully / partially (rest zeroed) / size-inferred · <strong>Indexing</strong> — <code>0</code> to <code>N−1</code>, out-of-bounds is undefined behavior, the <code>sizeof(arr)/sizeof(arr[0])</code> trick, the <code>&lt;=</code>-vs-<code>&lt;</code> off-by-one · <strong>Patterns</strong> — sum/average (cast before dividing), max/min seeded from <code>arr[0]</code>, linear search returning index or <code>-1</code> · <strong>Pointers</strong> — <code>&amp;</code> address-of, <code>*</code> dereference, arrays decay to a pointer to the first element, <code>arr[i] ≡ *(arr+i)</code>, pointer arithmetic scaled by element size · <strong>Functions</strong> — arrays decay so pass <code>n</code> separately and use <code>const</code> for read-only · <strong>2D arrays</strong> — row-major, last index changes fastest.</p>
+      </div>
+      <div class="card">
+        <h5>📄 Text reference</h5>
+        <p>The full written handout (same content, no animation) is the printable study copy: <span class="mono">L06-student-handout.md</span>, also as PDF.</p>
+      </div>
+    </div>
+
+    <div class="chapnav">
+      <a href="lecture-05.html"><span class="dir">Previous</span><div class="lb">← Lecture 5</div></a>
+      <a href="index.html"><span class="dir">Contents</span><div class="lb">All lectures</div></a>
+      <a href="lecture-07.html"><span class="dir">Next</span><div class="lb">Lecture 7 →</div></a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  First-Year Programming · Lecture 6 — Arrays and Pointers<br>
+  © 2026 Dr. Ali Mahmoud Mansour · All rights reserved. Content &amp; concept: Dr. Ali Mahmoud Mansour · Co-created with Claude (Anthropic).
+  <span aria-hidden="true">⁠​‌​​‌‌‌‌​‌​‌​‌‌‌​‌​​‌‌‌​​‌​​​‌​‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​​‌​‌​​‌‌​​​‌​​‌​​‌​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌​​​​‌​​‌‌​‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​​​‌​​​​‌​‌‌​‌​‌​​‌‌​‌​‌​​​​​‌​‌​​‌‌‌​​‌​‌​​‌‌​‌​​‌‌‌‌​‌​‌​‌​‌​‌​‌​​‌​​​‌‌‌​‌‌​‌​​​​‌‌​‌​​‌‌‌‌​​‌​‌‌​‌​‌​​​​‌‌​‌​‌​​‌​​‌​​​‌​‌​‌​​​​​‌​‌​‌​‌​​​‌​​‌‌‌‌​‌​‌​​‌​​​‌‌‌‌​‌​‌​​​​‌‌​‌​​‌‌​​​‌​​​​​‌​‌​‌​‌​‌​‌​​​‌​​​‌​​​‌​‌​​‌‌‌​‌‌​‌​‌‌​​‌​‌​​​‌​‌​‌​​​​​‌​‌​‌​​‌​​​‌‌‌‌​‌​​‌‌​​‌​​​‌‌​​​​​​‌‌​​‌​​​‌‌​‌‌​⁠</span>
+</footer>
+
+<script>
+/* ============================================================
+   DEMO 1 — Contiguous memory: index -> address  (ARR)
+   arr[5] = {10,20,30,40,50}, base = 0x1000, sizeof(int)=4.
+   Each step highlights arr[i] and shows address = base + i*4.
+   ============================================================ */
+const ARR = (function() {
+  var stage = document.getElementById('arr-stage');
+  var cap   = document.getElementById('arr-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var VALUES = [10, 20, 30, 40, 50];
+  var BASE = 0x1000;   // 4096
+  var SZ = 4;          // sizeof(int)
+
+  function hex(n) { return '0x' + n.toString(16).toUpperCase(); }
+
+  // Build the step list: intro, then one step per element.
+  var STEPS = [];
+  STEPS.push({hot: -1, msg: 'int arr[5] = {10, 20, 30, 40, 50}; base address = 0x1000, sizeof(int) = 4 bytes.'});
+  for (var v = 0; v < VALUES.length; v++) {
+    var addr = BASE + v * SZ;
+    STEPS.push({
+      hot: v,
+      msg: 'arr[' + v + '] = ' + VALUES[v] + ' lives at ' + hex(BASE) + ' + ' + v +
+           ' x 4 = ' + hex(addr) + '. Index ' + v + ' means ' + v + ' steps from the base.'
+    });
+  }
+
+  function build() {
+    var html = '<div class="arrbox">' +
+      '<div class="arrhdr">int arr[5] = {10, 20, 30, 40, 50};   <b>base = 0x1000</b>, sizeof(int) = 4</div>' +
+      '<div class="arrrow">';
+    for (var i = 0; i < VALUES.length; i++) {
+      var addr = BASE + i * SZ;
+      html += '<div class="acell" id="acell' + i + '">' +
+                '<div class="av">' + VALUES[i] + '</div>' +
+                '<div class="ai">arr[' + i + ']</div>' +
+                '<div class="aa">' + hex(addr) + '</div>' +
+              '</div>';
+    }
+    html += '</div></div>';
+    stage.innerHTML = html;
+  }
+
+  function applyStep(s) {
+    for (var i = 0; i < VALUES.length; i++) {
+      var el = document.getElementById('acell' + i);
+      if (el) { el.className = (i === s.hot) ? 'acell hot' : 'acell'; }
+    }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('arr-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('arr-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 1100);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to trace each index to its memory address.';
+    var btn = document.getElementById('arr-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+
+/* ============================================================
+   DEMO 2 — Pointer arithmetic: *(arr + i) == arr[i]  (PTR)
+   arr[5] = {10,20,30,40,50}, int *p = arr.
+   Each step moves the pointer arrow to arr+i and shows the
+   dereference equals arr[i].
+   ============================================================ */
+const PTR = (function() {
+  var stage = document.getElementById('ptr-stage');
+  var cap   = document.getElementById('ptr-cap');
+  var stepIdx = 0;
+  var timer = null;
+
+  var VALUES = [10, 20, 30, 40, 50];
+
+  var STEPS = [];
+  STEPS.push({hot: -1, msg: 'int arr[5] = {10, 20, 30, 40, 50}; int *p = arr;  (p points at arr[0])'});
+  for (var v = 0; v < VALUES.length; v++) {
+    STEPS.push({
+      hot: v,
+      msg: '*(arr + ' + v + ') dereferences the box ' + v + ' step(s) along = ' + VALUES[v] +
+           ',  which is exactly arr[' + v + '] = ' + VALUES[v] + '.'
+    });
+  }
+
+  function build() {
+    var html = '<div class="ptrbox">';
+    // value cells
+    html += '<div class="ptrrow">';
+    for (var i = 0; i < VALUES.length; i++) {
+      html += '<div class="pcell" id="pcell' + i + '">' + VALUES[i] + '</div>';
+    }
+    html += '</div>';
+    // index labels
+    html += '<div class="pidxrow">';
+    for (var j = 0; j < VALUES.length; j++) {
+      html += '<div class="pidx">arr[' + j + ']</div>';
+    }
+    html += '</div>';
+    // arrow row
+    html += '<div class="pidxrow" id="ptr-arrows">';
+    for (var k = 0; k < VALUES.length; k++) {
+      html += '<div class="parrow" id="parrow' + k + '"></div>';
+    }
+    html += '</div>';
+    // equality line
+    html += '<div class="peq" id="ptr-eq">p + i walks one int at a time.</div>';
+    html += '</div>';
+    stage.innerHTML = html;
+  }
+
+  function applyStep(s) {
+    for (var i = 0; i < VALUES.length; i++) {
+      var cell = document.getElementById('pcell' + i);
+      var arw = document.getElementById('parrow' + i);
+      if (cell) { cell.className = (i === s.hot) ? 'pcell hot' : 'pcell'; }
+      if (arw)  { arw.textContent = (i === s.hot) ? '▲' : ''; }
+    }
+    var eq = document.getElementById('ptr-eq');
+    if (eq) {
+      if (s.hot < 0) {
+        eq.innerHTML = 'p + i walks one int at a time.';
+      } else {
+        eq.innerHTML = '<b>*(arr + ' + s.hot + ')</b> = ' + VALUES[s.hot] +
+                       '   ==   <b>arr[' + s.hot + ']</b> = ' + VALUES[s.hot];
+      }
+    }
+    cap.textContent = s.msg;
+  }
+
+  function step() {
+    if (stepIdx >= STEPS.length) {
+      clearInterval(timer); timer = null;
+      var btn = document.getElementById('ptr-play'); if (btn) { btn.disabled = false; }
+      return;
+    }
+    applyStep(STEPS[stepIdx]);
+    stepIdx++;
+  }
+
+  function play() {
+    reset();
+    var btn = document.getElementById('ptr-play'); if (btn) { btn.disabled = true; }
+    timer = setInterval(step, 1100);
+  }
+
+  function reset() {
+    clearInterval(timer); timer = null; stepIdx = 0; build();
+    cap.textContent = 'Press Play or Step to walk the pointer across the array.';
+    var btn = document.getElementById('ptr-play'); if (btn) { btn.disabled = false; }
+  }
+
+  reset();
+  return {play: play, step: step, reset: reset};
+}());
+</script>
+</body>
+</html>
